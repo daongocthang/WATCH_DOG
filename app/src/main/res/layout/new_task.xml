@@ -1,0 +1,38 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/newSymbolText"
+        android:inputType="textCapCharacters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@null"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:hint="@string/new_symbol" />
+    <EditText
+        android:id="@+id/newWarning"
+        android:inputType="numberDecimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@null"
+        android:layout_below="@id/newSymbolText"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:hint="@string/new_warning" />
+
+    <Button
+        android:id="@+id/newSaveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/newWarning"
+        android:textSize="16sp"
+        android:layout_alignParentEnd="true"
+        android:background="@android:color/transparent"
+        android:text="@string/save"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimaryDark" />
+
+</RelativeLayout>

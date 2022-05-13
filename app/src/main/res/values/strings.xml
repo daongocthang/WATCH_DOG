@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">WATCH_DOG</string>
+    <string name="menu_track">Track</string>
+    <string name="menu_reload">Reload</string>
+    <string name="save">Save</string>
+    <string name="new_symbol">Symbol</string>
+    <string name="new_warning">Warning Price</string>
+    <string name="tasks">Tasks</string>
+</resources>
