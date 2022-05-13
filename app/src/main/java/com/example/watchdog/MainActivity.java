@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +20,7 @@ import com.example.watchdog.interfaces.DialogCloseListener;
 import com.example.watchdog.models.Stock;
 import com.example.watchdog.services.TrackingService;
 import com.example.watchdog.utils.DbHandler;
+import com.example.watchdog.utils.StockCollection;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -30,11 +32,12 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     public static final String ACTIVITY_FINISH = "main_activity_finish";
     private DbHandler db;
     private StockAdapter adapter;
-    private List<Stock> stockList;
-    BroadcastReceiver receiver=new BroadcastReceiver() {
+    private StockCollection stockCollection;
+
+    BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(ACTIVITY_FINISH)){
+            if (intent.getAction().equals(ACTIVITY_FINISH)) {
                 finish();
             }
         }
@@ -46,14 +49,14 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         setContentView(R.layout.activity_main);
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-        IntentFilter filter=new IntentFilter();
+        IntentFilter filter = new IntentFilter();
         filter.addAction(ACTIVITY_FINISH);
-        registerReceiver(receiver,filter);
+        registerReceiver(receiver, filter);
+
+        stockCollection=new StockCollection(this);
 
         db = new DbHandler(this);
         db.openDb();
-
-        stockList = new ArrayList<>();
 
         RecyclerView taskRecyclerView = findViewById(R.id.tasksRecyclerView);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -66,9 +69,8 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new RecyclerItemTouchHelper(adapter, this));
         itemTouchHelper.attachToRecyclerView(taskRecyclerView);
 
-        stockList = db.getAllStock();
+        List<Stock> stockList = db.getAllStock();
         Collections.reverse(stockList);
-
         adapter.setTasks(stockList);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     protected void onStart() {
         super.onStart();
         startTrackingService();
+        reloadAdapter();
     }
 
     @Override
@@ -91,19 +94,27 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         super.onDestroy();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void handleDialogClose(DialogInterface dialog) {
-        stockList = db.getAllStock();
-        Collections.reverse(stockList);
-        adapter.setTasks(stockList);
-        adapter.notifyDataSetChanged();
-
+        reloadAdapter();
         startTrackingService();
+    }
+
+    private void reloadAdapter(){
+        List<Stock> dbAllStock=db.getAllStock();
+        Collections.reverse(dbAllStock);
+        stockCollection.collect(dbAllStock, new StockCollection.ResponseListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(List<Stock> stocks) {
+                adapter.setTasks(stocks);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     public void startTrackingService() {
         Intent serviceIntent = new Intent(this, TrackingService.class);
-        startService(serviceIntent);
+        ContextCompat.startForegroundService(this,serviceIntent);
     }
 }

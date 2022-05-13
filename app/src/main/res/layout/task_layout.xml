@@ -9,7 +9,7 @@
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp">
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp">
 
@@ -22,14 +22,23 @@
             android:textSize="18dp"
             tools:text="AAA"/>
         <TextView
-            android:id="@+id/stackWarningPrice"
+            android:id="@+id/stackWarning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="18dp"
+            android:textColor="#FF0000"
+            android:text="SL"/>
+        <TextView
+            android:id="@+id/stackLast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:textSize="18dp"
             android:textColor="@color/black"
-            android:text="10"/>
+            android:text="MK"/>
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

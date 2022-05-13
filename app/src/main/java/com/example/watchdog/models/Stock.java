@@ -1,5 +1,9 @@
 package com.example.watchdog.models;
 
+import android.annotation.SuppressLint;
+
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
 public class Stock implements Serializable {
@@ -50,5 +54,11 @@ public class Stock implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @SuppressLint("DefaultLocale")
+    @NonNull
+    public String toString(){
+        return String.format("id=%d;symbol=%s;warning=%,.2f;last=%,.2f",id,symbol,warningPrice,lastPrice);
     }
 }

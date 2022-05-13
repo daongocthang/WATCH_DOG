@@ -46,6 +46,8 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder> 
 
         final Stock item = stockList.get(position);
         holder.tvWarning.setText(String.valueOf(item.getWarningPrice()));
+        holder.tvLast.setText(String.valueOf(item.getLastPrice()));
+
         holder.checkBox.setText(item.getSymbol());
         holder.checkBox.setChecked(toBoolean(item.getStatus()));
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -89,8 +91,8 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder> 
     public void editItem(int position) {
         Stock item = stockList.get(position);
         Bundle bundle = new Bundle();
-        bundle.putSerializable("stock",item);
-        bundle.putInt("id",item.getId());
+        bundle.putSerializable("stock", item);
+        bundle.putInt("id", item.getId());
         AddNewTask fragment = new AddNewTask();
         fragment.setArguments(bundle);
         fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
@@ -99,11 +101,13 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder> 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox checkBox;
         TextView tvWarning;
+        TextView tvLast;
 
         ViewHolder(View view) {
             super(view);
             checkBox = view.findViewById(R.id.stackCheckBox);
-            tvWarning=view.findViewById(R.id.stackWarningPrice);
+            tvWarning = view.findViewById(R.id.stackWarning);
+            tvLast = view.findViewById(R.id.stackLast);
         }
     }
 }
