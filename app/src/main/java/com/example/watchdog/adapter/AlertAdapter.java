@@ -6,13 +6,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.watchdog.AddNewTask;
+import com.example.watchdog.AlertForm;
 import com.example.watchdog.Constant;
 import com.example.watchdog.MainActivity;
 import com.example.watchdog.R;
@@ -21,13 +22,13 @@ import com.example.watchdog.utils.DbHandler;
 
 import java.util.List;
 
-public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder> {
+public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> {
 
     private List<Stock> stockList;
     private final MainActivity activity;
     private final DbHandler db;
 
-    public StockAdapter(DbHandler db, MainActivity activity) {
+    public AlertAdapter(DbHandler db, MainActivity activity) {
         this.activity = activity;
         this.db = db;
     }
@@ -36,7 +37,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.task_layout, parent, false);
+                .inflate(R.layout.alert_list_item, parent, false);
         return new ViewHolder(itemView);
     }
 
@@ -54,9 +55,21 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder> 
         if (item.getType() == Stock.LESS) {
             holder.tvType.setText(Constant.LESS);
             holder.tvType.setTextColor(ContextCompat.getColor(activity, R.color.warning_dark));
+
+            if (item.getWarningPrice() > item.getLastPrice()) {
+                holder.imIcon.setVisibility(View.VISIBLE);
+            }else {
+                holder.imIcon.setVisibility(View.INVISIBLE);
+            }
         } else {
             holder.tvType.setText(Constant.GREATER);
             holder.tvType.setTextColor(ContextCompat.getColor(activity, R.color.success_dark));
+
+            if (item.getWarningPrice() < item.getLastPrice()) {
+                holder.imIcon.setVisibility(View.VISIBLE);
+            }else{
+                holder.imIcon.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -89,9 +102,9 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder> 
         Bundle bundle = new Bundle();
         bundle.putSerializable("stock", item);
         bundle.putInt("id", item.getId());
-        AddNewTask fragment = new AddNewTask(activity.getStockDex());
+        AlertForm fragment = new AlertForm(activity.getStockDex());
         fragment.setArguments(bundle);
-        fragment.show(activity.getSupportFragmentManager(), AddNewTask.TAG);
+        fragment.show(activity.getSupportFragmentManager(), AlertForm.TAG);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -100,15 +113,16 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder> 
         TextView tvLast;
         TextView tvType;
         TextView tvShortName;
-
+        ImageView imIcon;
 
         ViewHolder(View view) {
             super(view);
-            tvSymbol = view.findViewById(R.id.stackSymbol);
-            tvWarning = view.findViewById(R.id.stackWarning);
-            tvLast = view.findViewById(R.id.stackLast);
-            tvType = view.findViewById(R.id.stackType);
-            tvShortName = view.findViewById(R.id.stackShortName);
+            tvSymbol = view.findViewById(R.id.alItemSymbol);
+            tvWarning = view.findViewById(R.id.alItemWarning);
+            tvLast = view.findViewById(R.id.alItemLast);
+            tvType = view.findViewById(R.id.alItemType);
+            tvShortName = view.findViewById(R.id.alItemShortName);
+            imIcon = view.findViewById(R.id.alItemIcon);
         }
     }
 }

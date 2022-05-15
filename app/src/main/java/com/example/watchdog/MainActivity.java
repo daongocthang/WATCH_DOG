@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.watchdog.adapter.StockAdapter;
+import com.example.watchdog.adapter.AlertAdapter;
 import com.example.watchdog.interfaces.DialogCloseListener;
 import com.example.watchdog.models.Stock;
 import com.example.watchdog.services.TrackingService;
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     public static final String ACTIVITY_FINISH = "main_activity_finish";
     private Map<String, String> stockDex;
     private DbHandler db;
-    private StockAdapter adapter;
+    private AlertAdapter adapter;
     private StockCollection stockCollection;
 
     BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         RecyclerView taskRecyclerView = findViewById(R.id.tasksRecyclerView);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new StockAdapter(db, this);
+        adapter = new AlertAdapter(db, this);
         taskRecyclerView.setAdapter(adapter);
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AddNewTask(stockDex).show(getSupportFragmentManager(), AddNewTask.TAG);
+                new AlertForm(stockDex).show(getSupportFragmentManager(), AlertForm.TAG);
             }
         });
     }

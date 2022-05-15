@@ -3,9 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/CodeLabs/Android/WATCH_DOG/app/src/main/res/drawable/ic_baseline_alarm.xml" value="0.196" />
         <entry key="..\:/CodeLabs/Android/WATCH_DOG/app/src/main/res/drawable/ic_baseline_cancel.xml" value="0.2375" />
+        <entry key="..\:/CodeLabs/Android/WATCH_DOG/app/src/main/res/drawable/ic_baseline_circle_notifications.xml" value="0.196" />
+        <entry key="..\:/CodeLabs/Android/WATCH_DOG/app/src/main/res/drawable/ic_baseline_warning.xml" value="0.196" />
         <entry key="..\:/CodeLabs/Android/WATCH_DOG/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2375" />
+        <entry key="..\:/CodeLabs/Android/WATCH_DOG/app/src/main/res/layout-v26/alert_list_item.xml" value="0.18802083333333333" />
         <entry key="..\:/CodeLabs/Android/WATCH_DOG/app/src/main/res/layout/activity_main.xml" value="0.18802083333333333" />
+        <entry key="..\:/CodeLabs/Android/WATCH_DOG/app/src/main/res/layout/alert_list_item.xml" value="0.18802083333333333" />
+        <entry key="..\:/CodeLabs/Android/WATCH_DOG/app/src/main/res/layout/new_alert.xml" value="0.18802083333333333" />
         <entry key="..\:/CodeLabs/Android/WATCH_DOG/app/src/main/res/layout/new_task.xml" value="0.36666666666666664" />
         <entry key="..\:/CodeLabs/Android/WATCH_DOG/app/src/main/res/layout/task_layout.xml" value="0.36666666666666664" />
         <entry key="..\:/CodeLabs/Android/WATCH_DOG/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2375" />

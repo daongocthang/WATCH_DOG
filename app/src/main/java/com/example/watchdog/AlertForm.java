@@ -22,7 +22,6 @@ import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import com.example.watchdog.interfaces.DialogCloseListener;
 import com.example.watchdog.models.Stock;
@@ -34,15 +33,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class AddNewTask extends BottomSheetDialogFragment {
+public class AlertForm extends BottomSheetDialogFragment {
 
-    public static final String TAG = AddNewTask.class.getSimpleName();
+    public static final String TAG = AlertForm.class.getSimpleName();
     private AutoCompleteTextView newSymbolText;
     private EditText newWarningText;
     private int stockType;
     private final Map<String, String> stockDex;
 
-    public AddNewTask(Map<String, String> stockBox) {
+    public AlertForm(Map<String, String> stockBox) {
         this.stockDex = stockBox;
     }
 
@@ -56,7 +55,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.new_task, container, false);
+        View view = inflater.inflate(R.layout.alert_form, container, false);
         Objects.requireNonNull(getDialog()).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         return view;

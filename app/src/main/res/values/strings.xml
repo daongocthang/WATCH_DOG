@@ -8,5 +8,6 @@
     <string name="radio_greater">Lớn hơn</string>
     <string name="sample_digit">10.0</string>
     <string name="sample_word">AAA</string>
+    <string name="sample_icon">icon</string>
     <string name="clear_text">clear_text</string>
 </resources>
