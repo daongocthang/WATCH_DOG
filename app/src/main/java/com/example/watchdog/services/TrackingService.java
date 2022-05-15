@@ -6,13 +6,12 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import com.example.watchdog.Constant;
 import com.example.watchdog.MainActivity;
 import com.example.watchdog.R;
 import com.example.watchdog.models.Stock;
@@ -20,14 +19,14 @@ import com.example.watchdog.receivers.TrackingReceiver;
 import com.example.watchdog.utils.DbHandler;
 import com.example.watchdog.utils.StockCollection;
 
-import java.io.Serializable;
-import java.util.HashMap;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-public class TrackingService extends Service implements Runnable, StockCollection.ResponseListener {
+public class TrackingService extends Service implements Runnable, StockCollection.PriceResponseListener {
 
     public static final String ACTION_SERVICE_STOP = "action_service_stop";
-    public static final String ACTION_DATA_SEND = "action_data_send";
 
     private static final String TAG = TrackingService.class.getSimpleName();
     private static final int PERIOD = 10000;
@@ -37,12 +36,16 @@ public class TrackingService extends Service implements Runnable, StockCollectio
     private boolean running;
     private List<Stock> stockList;
     private StockCollection stockCollection;
+    private SimpleDateFormat simpleDateFormat;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Toast.makeText(this, "Start Tracking Service", Toast.LENGTH_SHORT).show();
+
+//        Toast.makeText(this, "Start Tracking Service", Toast.LENGTH_SHORT).show();
+        simpleDateFormat = new SimpleDateFormat("HH:mm");
         db = new DbHandler(this.getApplicationContext());
+        db.openDb();
         stockCollection = new StockCollection(this);
 
         running = true;
@@ -51,7 +54,7 @@ public class TrackingService extends Service implements Runnable, StockCollectio
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         pullStocks();
-        sendNotification(null, true);
+        sendNotification(Constant.NOTIFICATION_TITLE_NOTHING, null, true);
 
         if (worker == null) {
             worker = new Thread(this);
@@ -70,20 +73,20 @@ public class TrackingService extends Service implements Runnable, StockCollectio
     @Override
     public void onDestroy() {
         running = false;
-        Toast.makeText(this, "Force Stop Tracking Service", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Force Stop Tracking Service", Toast.LENGTH_SHORT).show();
         super.onDestroy();
     }
 
     public synchronized void pullStocks() {
         //TODO: add stockList
-        db.openDb();
         stockList = db.getAllStock();
 
+        // stop if no work
         if (stockList.size() == 0)
             stopSelf();
     }
 
-    public void sendNotification(String strDataIntent, boolean silent) {
+    public void sendNotification(String title, String content, boolean silent) {
         Intent activityIntent = new Intent(this, MainActivity.class);
         PendingIntent pIntentActivity = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_IMMUTABLE);
 
@@ -92,11 +95,11 @@ public class TrackingService extends Service implements Runnable, StockCollectio
         PendingIntent pIntentAction = PendingIntent.getBroadcast(this, 0, actionIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                //.setContentTitle("Watchdog")
-                .setContentText(strDataIntent)
+                .setContentTitle(title)
+                .setContentText(content)
                 .setContentIntent(pIntentActivity)
                 .setSmallIcon(R.drawable.logo)
-                .addAction(R.drawable.ic_baseline_close, "Exit", pIntentAction)
+                .addAction(R.drawable.ic_baseline_close, Constant.EXIT, pIntentAction)
                 .setSilent(silent)
                 // set high priority for Heads Up Notification
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -111,7 +114,7 @@ public class TrackingService extends Service implements Runnable, StockCollectio
         while (true) {
             try {
                 if (!running) break;
-                stockCollection.collect(stockList, this);
+                stockCollection.collectAdPrice(stockList, this);
                 Thread.sleep(PERIOD);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -122,18 +125,27 @@ public class TrackingService extends Service implements Runnable, StockCollectio
     @Override
     public void onResponse(List<Stock> stocks) {
         StringBuilder stringBuilder = new StringBuilder();
-        boolean alert = false;
-
+        Calendar calendar = Calendar.getInstance();
+        String strDate = simpleDateFormat.format(calendar.getTime());
+        boolean notifiable = false;
+        stringBuilder.append(String.format("[ %s ]", strDate));
         for (Stock s : stocks) {
-            if (s.getStatus() == 1) continue;
-            if (s.getWarningPrice() < s.getLastPrice()) continue;
+            boolean alert = s.getWarningPrice() <= s.getLastPrice();
+            if (s.getType() == Stock.LESS)
+                alert = s.getWarningPrice() >= s.getLastPrice();
 
-            alert = true;
-            stringBuilder.append(String.format("%s=%,.2f ", s.getSymbol(), s.getLastPrice()));
+            if (alert) {
+                stringBuilder.append(String.format(" %s%s%.2f ", s.getSymbol(), s.getType() == Stock.LESS ? "<" : ">", s.getWarningPrice()));
+                if (!s.isAlerted()) {
+                    s.setAlerted(true);
+                    notifiable = true;
+                }
+            } else {
+                s.setAlerted(false);
+            }
         }
 
-        if (!alert) return;
-
-        sendNotification(stringBuilder.toString(), false);
+        if (notifiable)
+            sendNotification(Constant.NOTIFICATION_TITLE_WARNING, stringBuilder.toString(), false);
     }
 }

@@ -20,13 +20,15 @@ public class DbHandler extends SQLiteOpenHelper {
     private static final String STOCK_TABLE = "tbl_stock";
     private static final String ID = "id";
     private static final String SYMBOL = "symbol";
+    private static final String SHORT_NAME = "shortName";
+    private static final String TYPE = "type";
     private static final String WARNING = "warning";
 
-    private static final String STATUS = "status";
     private static final String CREATE_STOCK_TABLE = "CREATE TABLE " + STOCK_TABLE + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + SYMBOL + " TEXT, "
+            + SHORT_NAME + " TEXT, "
             + WARNING + " INTEGER, "
-            + STATUS + " INTEGER)";
+            + TYPE + " INTEGER)";
 
     private SQLiteDatabase db;
 
@@ -49,7 +51,6 @@ public class DbHandler extends SQLiteOpenHelper {
         db = this.getWritableDatabase();
     }
 
-
     @SuppressLint("Range")
     public List<Stock> getAllStock() {
         List<Stock> taskList = new ArrayList<>();
@@ -63,8 +64,9 @@ public class DbHandler extends SQLiteOpenHelper {
                         Stock s = new Stock();
                         s.setId(curs.getInt(curs.getColumnIndex(ID)));
                         s.setSymbol(curs.getString(curs.getColumnIndex(SYMBOL)));
+                        s.setShortName(curs.getString(curs.getColumnIndex(SHORT_NAME)));
                         s.setWarningPrice(curs.getDouble(curs.getColumnIndex(WARNING)));
-                        s.setStatus(curs.getInt(curs.getColumnIndex(STATUS)));
+                        s.setType(curs.getInt(curs.getColumnIndex(TYPE)));
 
                         taskList.add(s);
 
@@ -83,26 +85,23 @@ public class DbHandler extends SQLiteOpenHelper {
     public void insertStock(Stock stock) {
         ContentValues cv = new ContentValues();
         cv.put(SYMBOL, stock.getSymbol());
+        cv.put(SHORT_NAME, stock.getShortName());
         cv.put(WARNING, stock.getWarningPrice());
-        cv.put(STATUS, 0);
+        cv.put(TYPE, stock.getType());
+
         db.insert(STOCK_TABLE, null, cv);
     }
 
-    public void updateStock(int id, String symbol,Double warning) {
+    public void updateStock(int id, String symbol, String shortName, Double warning, int type) {
         ContentValues cv = new ContentValues();
         cv.put(SYMBOL, symbol);
-        cv.put(WARNING,warning);
+        cv.put(SHORT_NAME, shortName);
+        cv.put(WARNING, warning);
+        cv.put(TYPE, type);
         db.update(STOCK_TABLE, cv, ID + "= ?", new String[]{String.valueOf(id)});
     }
 
     public void deleteStock(int id) {
         db.delete(STOCK_TABLE, ID + "= ?", new String[]{String.valueOf(id)});
     }
-
-    public void updateStatus(int id, int status) {
-        ContentValues cv = new ContentValues();
-        cv.put(STATUS, status);
-        db.update(STOCK_TABLE, cv, ID + "= ?", new String[]{String.valueOf(id)});
-    }
-
 }

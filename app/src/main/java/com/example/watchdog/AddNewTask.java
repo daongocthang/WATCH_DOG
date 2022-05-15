@@ -1,38 +1,46 @@
 package com.example.watchdog;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import com.example.watchdog.interfaces.DialogCloseListener;
 import com.example.watchdog.models.Stock;
 import com.example.watchdog.utils.DbHandler;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class AddNewTask extends BottomSheetDialogFragment {
 
-    public static final String TAG = "ActionBottomDialog";
-    private EditText newSymbolText;
+    public static final String TAG = AddNewTask.class.getSimpleName();
+    private AutoCompleteTextView newSymbolText;
     private EditText newWarningText;
-    private Button newStockSaveButton;
+    private int stockType;
+    private final Map<String, String> stockDex;
 
-    public static AddNewTask newInstance() {
-        return new AddNewTask();
+    public AddNewTask(Map<String, String> stockBox) {
+        this.stockDex = stockBox;
     }
 
     @Override
@@ -55,9 +63,33 @@ public class AddNewTask extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        newSymbolText = requireView().findViewById(R.id.newSymbolText);
-        newWarningText = requireView().findViewById(R.id.newWarning);
-        newStockSaveButton = requireView().findViewById(R.id.newSaveButton);
+        List<String> suggestions = new ArrayList<>(stockDex.keySet());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.select_dialog_item, suggestions);
+        newSymbolText = view.findViewById(R.id.newSymbolText);
+        newSymbolText.setAdapter(adapter);
+
+        newWarningText = view.findViewById(R.id.newWarning);
+
+        addCancelButton(newSymbolText,R.id.fromNewSymbol);
+        addCancelButton(newWarningText,R.id.fromNewWarning);
+
+        Button newStockSaveButton = view.findViewById(R.id.newSaveButton);
+        RadioGroup radioGroup = view.findViewById(R.id.radio_grp);
+        radioGroup.check(R.id.radio_less);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @SuppressLint("NonConstantResourceId")
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radio_less:
+                        stockType = Stock.LESS;
+                        break;
+                    case R.id.radio_greater:
+                        stockType = Stock.GREATER;
+                        break;
+                }
+            }
+        });
 
         boolean isUpdate = false;
         final Bundle bundle = getArguments();
@@ -67,9 +99,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
             assert stock != null;
             newSymbolText.setText(stock.getSymbol());
             newWarningText.setText(String.valueOf(stock.getWarningPrice()));
-
-            if (stock.getSymbol().length() > 0)
-                newStockSaveButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryDark));
+            radioGroup.check(stock.getType() == 0 ? R.id.radio_less : R.id.radio_greater);
         }
 
         DbHandler db = new DbHandler(getActivity());
@@ -79,25 +109,28 @@ public class AddNewTask extends BottomSheetDialogFragment {
         newStockSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(newSymbolText.getText().toString().equals("")){
+                if (newSymbolText.getText().toString().equals("")) {
                     newSymbolText.setError("Require");
                     return;
                 }
 
-                if(newWarningText.getText().toString().equals("")){
+                if (newWarningText.getText().toString().equals("")) {
                     newSymbolText.setError("Require");
                     return;
                 }
 
                 String symbol = newSymbolText.getText().toString();
-                Double warning =Double.parseDouble( newWarningText.getText().toString());
+                String shortName = stockDex.get(symbol);
+                double warning = Double.parseDouble(newWarningText.getText().toString());
+
                 if (finalIsUpdate) {
-                    db.updateStock(bundle.getInt("id"), symbol,warning);
+                    db.updateStock(bundle.getInt("id"), symbol, shortName, warning, stockType);
                 } else {
                     Stock stock = new Stock();
                     stock.setSymbol(symbol);
+                    stock.setShortName(shortName);
                     stock.setWarningPrice(warning);
-                    stock.setStatus(0);
+                    stock.setType(stockType);
                     db.insertStock(stock);
                 }
                 dismiss();
@@ -111,5 +144,40 @@ public class AddNewTask extends BottomSheetDialogFragment {
         if (activity instanceof DialogCloseListener) {
             ((DialogCloseListener) activity).handleDialogClose(dialog);
         }
+    }
+
+    @Override
+    public void onCancel(@NonNull DialogInterface dialog) {
+        super.onCancel(dialog);
+        Log.e(TAG, "Dismiss when pressing outside");
+        dismiss();
+    }
+
+    private void addCancelButton(EditText edt, int id){
+        ImageButton btn=requireView().findViewById(id);
+
+        btn.setVisibility(ImageButton.GONE);
+        edt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                btn.setVisibility(s.length()>0?ImageButton.VISIBLE:ImageButton.GONE);
+            }
+        });
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                edt.getText().clear();
+            }
+        });
     }
 }

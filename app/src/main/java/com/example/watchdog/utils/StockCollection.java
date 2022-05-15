@@ -15,35 +15,67 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StockCollection {
     private static final String TAG = StockCollection.class.getSimpleName();
-    private static final String FINFO_API = "https://finfoapi-hn.vndirect.com.vn/stocks/adPrice?symbols=";
+    private static final String FINFO_API = "https://finfoapi-hn.vndirect.com.vn/stocks";
 
     private List<Stock> stockList;
     private String url;
     private final Context context;
 
     public StockCollection(Context context) {
-        this.context=context;
+        this.context = context;
+    }
+
+    public void collectAllStocks(InfoResponseListener infoResponseListener) {
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, FINFO_API, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray data = response.getJSONArray("data");
+                    Map<String, String> map = new HashMap<>();
+
+                    for (int i = 0; i < data.length(); i++) {
+                        JSONObject object = data.getJSONObject(i);
+                        map.put(object.getString("symbol"),object.getString("shortName"));
+                    }
+                    Log.e(TAG,map.toString());
+                    infoResponseListener.onResponse(map);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "JsonObjectRequest onErrorResponse: " + error.getMessage());
+            }
+        });
+
+        HttpVolley.getInstance(context).getRequestQueue().add(request);
     }
 
 
-    public void collect(List<Stock> stocks,StockCollection.ResponseListener responseListener){
+    public void collectAdPrice(List<Stock> stocks, PriceResponseListener responseListener) {
         initialize(stocks);
         assert !url.isEmpty();
-        JsonObjectRequest request=new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray data = response.getJSONArray("data");
                     Log.e(TAG, "JSONObject onResponse: " + data);
 
-                    for (int i=0;i<data.length();i++){
-                        JSONObject object=data.getJSONObject(i);
-                        for (Stock s:stockList){
-                            if(s.getSymbol().equals(object.getString("symbol")))
+                    for (int i = 0; i < data.length(); i++) {
+                        JSONObject object = data.getJSONObject(i);
+                        for (Stock s : stockList) {
+                            if (s.getSymbol().equals(object.getString("symbol")))
                                 s.setLastPrice(object.getDouble("close"));
                         }
                     }
@@ -72,32 +104,14 @@ public class StockCollection {
             symbols.add(s.getSymbol());
         }
         this.stockList = stocks;
-        this.url = FINFO_API + TextUtils.join(",", symbols);
+        this.url = FINFO_API + "/adPrice?symbols=" + TextUtils.join(",", symbols);
     }
 
-    private void pushStockPrices(JSONArray jsonArray) {
-        try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                for (Stock s : getBySymbol(jsonObject.getString("symbol"))) {
-                    s.setLastPrice(jsonObject.getDouble("close"));
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
-    private List<Stock> getBySymbol(String symbol) {
-        List<Stock> stocks = new ArrayList<>();
-        for (Stock s : stockList) {
-            if (s.getSymbol().equals(symbol))
-                stocks.add(s);
-        }
-        return stocks;
-    }
-
-    public static interface ResponseListener{
+    public interface PriceResponseListener {
         void onResponse(List<Stock> stocks);
+    }
+    public interface InfoResponseListener{
+        void onResponse(Map<String,String> map);
     }
 }

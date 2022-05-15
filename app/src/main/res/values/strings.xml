@@ -1,9 +1,12 @@
 <resources>
-    <string name="app_name">WATCH_DOG</string>
-    <string name="menu_track">Track</string>
-    <string name="menu_reload">Reload</string>
-    <string name="save">Save</string>
-    <string name="new_symbol">Symbol</string>
-    <string name="new_warning">Warning Price</string>
-    <string name="tasks">Tasks</string>
+    <string name="app_name">vStockAlarm</string>
+    <string name="save">Lưu</string>
+    <string name="new_symbol">Mã CK</string>
+    <string name="new_warning">Giá</string>
+    <string name="title_alerts">Danh mục cảnh báo</string>
+    <string name="radio_less">Nhỏ hơn</string>
+    <string name="radio_greater">Lớn hơn</string>
+    <string name="sample_digit">10.0</string>
+    <string name="sample_word">AAA</string>
+    <string name="clear_text">clear_text</string>
 </resources>

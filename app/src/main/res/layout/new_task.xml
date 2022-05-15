@@ -3,36 +3,99 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
-    <EditText
-        android:id="@+id/newSymbolText"
-        android:inputType="textCapCharacters"
+    <LinearLayout
+        android:id="@+id/newSymbolGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <AutoCompleteTextView
+            android:id="@+id/newSymbolText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:completionThreshold="1"
+            android:hint="@string/new_symbol"
+            android:imeOptions="actionNext"
+            android:inputType="textCapCharacters"
+            android:padding="10dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <ImageButton
+            android:id="@+id/fromNewSymbol"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:contentDescription="@string/clear_text"
+            android:paddingHorizontal="12dp"
+            android:src="@drawable/ic_baseline_cancel" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/newWarningGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:background="@null"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:hint="@string/new_symbol" />
-    <EditText
-        android:id="@+id/newWarning"
-        android:inputType="numberDecimal"
+        android:layout_below="@id/newSymbolGroup">
+
+        <EditText
+            android:id="@+id/newWarning"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="@string/new_warning"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal"
+            android:padding="10dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <ImageButton
+            android:id="@+id/fromNewWarning"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:contentDescription="@string/clear_text"
+            android:paddingHorizontal="12dp"
+            android:src="@drawable/ic_baseline_cancel" />
+    </LinearLayout>
+
+
+    <RadioGroup
+        android:id="@+id/radio_grp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:background="@null"
-        android:layout_below="@id/newSymbolText"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:hint="@string/new_warning" />
+        android:layout_below="@id/newWarningGroup"
+        android:layout_marginVertical="18dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radio_less"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/radio_less"
+            android:textColor="@color/warning_dark" />
+
+        <RadioButton
+            android:id="@+id/radio_greater"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/radio_greater"
+            android:textColor="@color/success_dark" />
+    </RadioGroup>
 
     <Button
         android:id="@+id/newSaveButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/newWarning"
-        android:textSize="16sp"
+        android:layout_below="@id/radio_grp"
         android:layout_alignParentEnd="true"
-        android:background="@android:color/transparent"
+        android:background="@color/colorPrimaryDark"
         android:text="@string/save"
         android:textAllCaps="false"
-        android:textColor="@color/colorPrimaryDark" />
+        android:textColor="@color/white"
+        android:textSize="16sp" />
 
 </RelativeLayout>

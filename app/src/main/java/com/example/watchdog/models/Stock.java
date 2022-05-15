@@ -7,11 +7,16 @@ import androidx.annotation.NonNull;
 import java.io.Serializable;
 
 public class Stock implements Serializable {
-    private String symbol;
+    public static final int LESS = 0;
+    public static final int GREATER = 1;
+
     private int id;
+    private String symbol;
+    private String shortName;
     private double warningPrice;
     private double lastPrice;
-    private int status;
+    private int type;
+    private boolean alerted;
 
     public Stock() {
     }
@@ -48,17 +53,33 @@ public class Stock implements Serializable {
         this.id = id;
     }
 
-    public int getStatus() {
-        return status;
+    public int getType() {
+        return type;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public boolean isAlerted() {
+        return alerted;
+    }
+
+    public void setAlerted(boolean alerted) {
+        this.alerted = alerted;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
     @SuppressLint("DefaultLocale")
     @NonNull
-    public String toString(){
-        return String.format("id=%d;symbol=%s;warning=%,.2f;last=%,.2f",id,symbol,warningPrice,lastPrice);
+    public String toString() {
+        return String.format("id=%d;symbol=%s;warning=%,.2f;last=%,.2f", id, symbol, warningPrice, lastPrice);
     }
 }
