@@ -10,4 +10,5 @@
     <string name="sample_word">AAA</string>
     <string name="sample_icon">icon</string>
     <string name="clear_text">clear_text</string>
+    <string name="tooltip_info">Chạm mức cảnh báo</string>
 </resources>

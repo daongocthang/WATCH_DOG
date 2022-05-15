@@ -70,8 +70,10 @@
             android:layout_alignParentEnd="true"
             android:layout_alignBottom="@+id/alItemShortName"
             android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_baseline_alarm"
+            android:src="@drawable/ic_baseline_error"
             android:visibility="invisible"
-            android:contentDescription="@string/sample_icon"/>
+            android:contentDescription="@string/sample_icon"
+            android:tooltipText="@string/tooltip_info"
+            tools:targetApi="o" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
