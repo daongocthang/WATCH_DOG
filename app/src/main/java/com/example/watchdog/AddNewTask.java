@@ -2,6 +2,7 @@ package com.example.watchdog;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -20,6 +22,7 @@ import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.example.watchdog.interfaces.DialogCloseListener;
 import com.example.watchdog.models.Stock;
@@ -70,8 +73,8 @@ public class AddNewTask extends BottomSheetDialogFragment {
 
         newWarningText = view.findViewById(R.id.newWarning);
 
-        addCancelButton(newSymbolText,R.id.fromNewSymbol);
-        addCancelButton(newWarningText,R.id.fromNewWarning);
+        addCancelButton(newSymbolText, R.id.fromNewSymbol);
+        addCancelButton(newWarningText, R.id.fromNewWarning);
 
         Button newStockSaveButton = view.findViewById(R.id.newSaveButton);
         RadioGroup radioGroup = view.findViewById(R.id.radio_grp);
@@ -100,6 +103,8 @@ public class AddNewTask extends BottomSheetDialogFragment {
             newSymbolText.setText(stock.getSymbol());
             newWarningText.setText(String.valueOf(stock.getWarningPrice()));
             radioGroup.check(stock.getType() == 0 ? R.id.radio_less : R.id.radio_greater);
+        }else{
+            newSymbolText.requestFocus();
         }
 
         DbHandler db = new DbHandler(getActivity());
@@ -141,6 +146,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         Activity activity = getActivity();
+
         if (activity instanceof DialogCloseListener) {
             ((DialogCloseListener) activity).handleDialogClose(dialog);
         }
@@ -153,8 +159,8 @@ public class AddNewTask extends BottomSheetDialogFragment {
         dismiss();
     }
 
-    private void addCancelButton(EditText edt, int id){
-        ImageButton btn=requireView().findViewById(id);
+    private void addCancelButton(EditText edt, int id) {
+        ImageButton btn = requireView().findViewById(id);
 
         btn.setVisibility(ImageButton.GONE);
         edt.addTextChangedListener(new TextWatcher() {
@@ -170,13 +176,17 @@ public class AddNewTask extends BottomSheetDialogFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                btn.setVisibility(s.length()>0?ImageButton.VISIBLE:ImageButton.GONE);
+                btn.setVisibility(s.length() > 0 ? ImageButton.VISIBLE : ImageButton.GONE);
             }
         });
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 edt.getText().clear();
+                edt.requestFocus();
+
+                InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(edt, InputMethodManager.SHOW_IMPLICIT);
             }
         });
     }
