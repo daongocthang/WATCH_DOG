@@ -23,6 +23,7 @@ import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.watchdog.adapter.StockSearchAdapter;
 import com.example.watchdog.interfaces.DialogCloseListener;
 import com.example.watchdog.models.Stock;
 import com.example.watchdog.utils.DbHandler;
@@ -65,8 +66,7 @@ public class AlertForm extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        List<String> suggestions = new ArrayList<>(stockDex.keySet());
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.select_dialog_item, suggestions);
+        StockSearchAdapter adapter = new StockSearchAdapter(requireContext(), R.layout.suggestion_item, stockDex);
         newSymbolText = view.findViewById(R.id.newSymbolText);
         newSymbolText.setAdapter(adapter);
 

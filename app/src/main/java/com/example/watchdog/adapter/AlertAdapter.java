@@ -37,7 +37,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.alert_list_item, parent, false);
+                .inflate(R.layout.alert_item, parent, false);
         return new ViewHolder(itemView);
     }
 
@@ -49,7 +49,6 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
         final Stock item = stockList.get(position);
 
         holder.tvSymbol.setText(item.getSymbol());
-        holder.tvShortName.setText(item.getShortName());
         holder.tvWarning.setText(String.valueOf(item.getWarningPrice()));
         holder.tvLast.setText(String.valueOf(item.getLastPrice()));
         if (item.getType() == Stock.LESS) {
@@ -112,7 +111,6 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
         TextView tvWarning;
         TextView tvLast;
         TextView tvType;
-        TextView tvShortName;
         ImageView imIcon;
 
         ViewHolder(View view) {
@@ -121,7 +119,6 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
             tvWarning = view.findViewById(R.id.alItemWarning);
             tvLast = view.findViewById(R.id.alItemLast);
             tvType = view.findViewById(R.id.alItemType);
-            tvShortName = view.findViewById(R.id.alItemShortName);
             imIcon = view.findViewById(R.id.alItemIcon);
         }
     }

@@ -12,6 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
         android:padding="8dp">
 
         <TextView
@@ -27,49 +28,38 @@
             android:id="@+id/alItemType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignBaseline="@+id/alItemWarning"
+            android:layout_toStartOf="@id/alItemWarning"
+            android:layout_alignBaseline="@id/alItemWarning"
             android:layout_marginEnd="4dp"
             android:text="@string/sample_word"
             android:textColor="@color/warning_dark"
-            android:textSize="22sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/alItemWarning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/alItemType"
+            android:layout_centerHorizontal="true"
             android:text="@string/sample_digit"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/alItemLast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@id/alItemIcon"
             android:text="@string/sample_digit"
             android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/alItemShortName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/alItemSymbol"
-            android:layout_marginStart="8dp"
-            android:text="@string/sample_word"
-            android:textColor="@android:color/darker_gray" />
+            android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/alItemIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/alItemSymbol"
             android:layout_alignParentEnd="true"
-            android:layout_alignBottom="@+id/alItemShortName"
-            android:layout_marginEnd="8dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
             android:src="@drawable/ic_baseline_error"
             android:visibility="invisible"
             android:contentDescription="@string/sample_icon"
