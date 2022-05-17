@@ -20,13 +20,16 @@ import com.example.watchdog.utils.DbHandler;
 import com.example.watchdog.utils.StockCollection;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class TrackingService extends Service implements Runnable, StockCollection.PriceResponseListener {
 
     public static final String ACTION_SERVICE_STOP = "action_service_stop";
+    public static final String ACTION_NOTIFICATION_SEND = "action_notification_send";
+    private static final int OPEN = 9;
+    private static final int CLOSED = 15;
 
     private static final String TAG = TrackingService.class.getSimpleName();
     private static final int PERIOD = 10000;
@@ -37,12 +40,14 @@ public class TrackingService extends Service implements Runnable, StockCollectio
     private List<Stock> stockList;
     private StockCollection stockCollection;
     private SimpleDateFormat simpleDateFormat;
+    private Calendar calendar;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
 //        Toast.makeText(this, "Start Tracking Service", Toast.LENGTH_SHORT).show();
+        calendar = Calendar.getInstance();
         simpleDateFormat = new SimpleDateFormat("HH:mm");
         db = new DbHandler(this.getApplicationContext());
         db.openDb();
@@ -107,6 +112,10 @@ public class TrackingService extends Service implements Runnable, StockCollectio
                 .build();
 
         startForeground(1, notification);
+
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(ACTION_NOTIFICATION_SEND);
+        sendBroadcast(broadcastIntent);
     }
 
     @Override
@@ -114,6 +123,12 @@ public class TrackingService extends Service implements Runnable, StockCollectio
         while (true) {
             try {
                 if (!running) break;
+
+                calendar.setTime(new Date());
+                int currentHours = calendar.get(Calendar.HOUR_OF_DAY);
+                if (currentHours < OPEN || currentHours > CLOSED)
+                    continue;
+
                 stockCollection.collectAdPrice(stockList, this);
                 Thread.sleep(PERIOD);
             } catch (InterruptedException e) {
@@ -125,7 +140,6 @@ public class TrackingService extends Service implements Runnable, StockCollectio
     @Override
     public void onResponse(List<Stock> stocks) {
         StringBuilder stringBuilder = new StringBuilder();
-        Calendar calendar = Calendar.getInstance();
         String strDate = simpleDateFormat.format(calendar.getTime());
         boolean notifiable = false;
         stringBuilder.append(String.format("[ %s ]", strDate));

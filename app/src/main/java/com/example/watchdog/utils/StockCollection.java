@@ -23,8 +23,6 @@ public class StockCollection {
     private static final String TAG = StockCollection.class.getSimpleName();
     private static final String FINFO_API = "https://finfoapi-hn.vndirect.com.vn/stocks";
 
-    private List<Stock> stockList;
-    private String url;
     private final Context context;
 
     public StockCollection(Context context) {
@@ -42,9 +40,9 @@ public class StockCollection {
 
                     for (int i = 0; i < data.length(); i++) {
                         JSONObject object = data.getJSONObject(i);
-                        map.put(object.getString("symbol"),object.getString("shortName"));
+                        map.put(object.getString("symbol"), object.getString("shortName"));
                     }
-                    Log.e(TAG,map.toString());
+                    Log.e(TAG, map.toString());
                     infoResponseListener.onResponse(map);
 
                 } catch (JSONException e) {
@@ -61,10 +59,8 @@ public class StockCollection {
         HttpVolley.getInstance(context).getRequestQueue().add(request);
     }
 
-
     public void collectAdPrice(List<Stock> stocks, PriceResponseListener responseListener) {
-        initialize(stocks);
-        assert !url.isEmpty();
+        String url = FINFO_API + "/adPrice?symbols=" + TextUtils.join(",", getSymbols(stocks));
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -74,13 +70,13 @@ public class StockCollection {
 
                     for (int i = 0; i < data.length(); i++) {
                         JSONObject object = data.getJSONObject(i);
-                        for (Stock s : stockList) {
+                        for (Stock s : stocks) {
                             if (s.getSymbol().equals(object.getString("symbol")))
                                 s.setLastPrice(object.getDouble("close"));
                         }
                     }
 
-                    responseListener.onResponse(stockList);
+                    responseListener.onResponse(stocks);
 
 
                 } catch (JSONException e) {
@@ -97,21 +93,20 @@ public class StockCollection {
         HttpVolley.getInstance(context).getRequestQueue().add(request);
     }
 
-
-    private void initialize(List<Stock> stocks) {
+    private List<String> getSymbols(List<Stock> stocks) {
         List<String> symbols = new ArrayList<>();
         for (Stock s : stocks) {
             symbols.add(s.getSymbol());
         }
-        this.stockList = stocks;
-        this.url = FINFO_API + "/adPrice?symbols=" + TextUtils.join(",", symbols);
+        return symbols;
     }
 
 
     public interface PriceResponseListener {
         void onResponse(List<Stock> stocks);
     }
-    public interface InfoResponseListener{
-        void onResponse(Map<String,String> map);
+
+    public interface InfoResponseListener {
+        void onResponse(Map<String, String> map);
     }
 }

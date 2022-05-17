@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements DialogCloseListener {
+    private static final String TAG  = MainActivity.class.getSimpleName();
     public static final String ACTIVITY_FINISH = "main_activity_finish";
     private Map<String, String> stockDex;
     private DbHandler db;
@@ -40,6 +42,10 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(ACTIVITY_FINISH)) {
                 finish();
+            }
+            if(intent.getAction().equals(TrackingService.ACTION_NOTIFICATION_SEND)){
+                Log.e(TAG,TrackingService.ACTION_NOTIFICATION_SEND);
+                reloadAdapter();
             }
         }
     };
