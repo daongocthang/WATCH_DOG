@@ -9,6 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.watchdog.models.Stock;
+import com.example.watchdog.models.StockInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,11 +19,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.DoubleUnaryOperator;
 
 public class StockCollection {
     private static final String TAG = StockCollection.class.getSimpleName();
-    private static final String FINFO_API = "https://finfoapi-hn.vndirect.com.vn/stocks";
-
     private final Context context;
 
     public StockCollection(Context context) {
@@ -30,20 +30,26 @@ public class StockCollection {
     }
 
     public void collectAllStocks(InfoResponseListener infoResponseListener) {
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, FINFO_API, null, new Response.Listener<JSONObject>() {
+        String url = "https://iboard.ssi.com.vn/dchart/api/1.1/defaultAllStocks";
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    Log.e(TAG, "AllStocks: " + response.toString());
                     JSONArray data = response.getJSONArray("data");
-                    Map<String, String> map = new HashMap<>();
-
+                    List<StockInfo> stockInfoList = new ArrayList<>();
                     for (int i = 0; i < data.length(); i++) {
                         JSONObject object = data.getJSONObject(i);
-                        map.put(object.getString("symbol"), object.getString("shortName"));
+                        if (object.getString("type").equals("s")) {
+                            StockInfo stockInfo = new StockInfo();
+                            stockInfo.setStockNo(object.getString("stockNo"));
+                            stockInfo.setSymbol(object.getString("code"));
+                            stockInfo.setShortName(object.getString("clientName"));
+
+                            stockInfoList.add(stockInfo);
+                        }
                     }
-                    Log.e(TAG, map.toString());
-                    infoResponseListener.onResponse(map);
+                    infoResponseListener.onResponse(stockInfoList);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -59,38 +65,61 @@ public class StockCollection {
         HttpVolley.getInstance(context).getRequestQueue().add(request);
     }
 
-    public void collectAdPrice(List<Stock> stocks, PriceResponseListener responseListener) {
-        String url = FINFO_API + "/adPrice?symbols=" + TextUtils.join(",", getSymbols(stocks));
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONArray data = response.getJSONArray("data");
-                    Log.e(TAG, "JSONObject onResponse: " + data);
+    public void collectMatchedPrices(List<Stock> stocks, PriceResponseListener responseListener) {
+        String url = "https://wgateway-iboard.ssi.com.vn/graphql";
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Stock s : stocks) {
+            stringBuilder.append(String.format("'%s'", s.getStockNo()));
+            if (!stocks.get(stocks.size() - 1).equals(s)) {
+                stringBuilder.append(",");
+            }
+        }
+        String body = "{" +
+                "    'operationName': 'stockRealtimesByIds'," +
+                "    'variables': {" +
+                "        'ids': [" + stringBuilder.toString() + "]" +
+                "    }," +
+                "    'query': 'query stockRealtimesByIds($ids: [String!]) {\\n  stockRealtimesByIds(ids: $ids) {\\n    stockNo\\n    stockSymbol\\n    refPrice\\n    matchedPrice\\n  }\\n}\\n'" +
+                "}";
+        try {
+            JSONObject jsonBody = new JSONObject(body.replace("'", "\""));
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    double last = 0;
+                    try {
+                        JSONArray data = response.getJSONObject("data").getJSONArray("stockRealtimesByIds");
+                        Log.e(TAG, "StockRealTIme: " + response.toString());
 
-                    for (int i = 0; i < data.length(); i++) {
-                        JSONObject object = data.getJSONObject(i);
-                        for (Stock s : stocks) {
-                            if (s.getSymbol().equals(object.getString("symbol")))
-                                s.setLastPrice(object.getDouble("close"));
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject object = data.getJSONObject(i);
+                            for (Stock s : stocks) {
+                                if (s.getStockNo().equals(object.getString("stockNo")))
+                                    last = object.getDouble("matchedPrice");
+                                if (last == 0) {
+                                    last = object.getDouble("refPrice");
+                                }
+                                s.setLastPrice(last / 1000);
+                            }
                         }
+
+                        responseListener.onResponse(stocks);
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-
-                    responseListener.onResponse(stocks);
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "JsonObjectRequest onErrorResponse: " + error.getMessage());
-            }
-        });
-
-        HttpVolley.getInstance(context).getRequestQueue().add(request);
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "JsonObjectRequest onErrorResponse: " + error.getMessage());
+                }
+            });
+            HttpVolley.getInstance(context).getRequestQueue().add(request);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private List<String> getSymbols(List<Stock> stocks) {
@@ -107,6 +136,6 @@ public class StockCollection {
     }
 
     public interface InfoResponseListener {
-        void onResponse(Map<String, String> map);
+        void onResponse(List<StockInfo> stockDex);
     }
 }

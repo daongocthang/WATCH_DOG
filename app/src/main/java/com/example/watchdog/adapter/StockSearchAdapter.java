@@ -13,39 +13,43 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.watchdog.R;
+import com.example.watchdog.models.StockInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public class StockSearchAdapter extends ArrayAdapter<String> {
-    private final Map<String,String> map;
+    private final List<StockInfo> items;
     private final Context context;
     private final int layoutResourceId;
 
-    public StockSearchAdapter(@NonNull Context context, int resource, @NonNull Map<String, String> map) {
-        super(context,resource);
-        super.addAll(map.keySet());
-        this.map =map;
-        this.context=context;
-        this.layoutResourceId=resource;
+    public StockSearchAdapter(@NonNull Context context, int resource, @NonNull List<StockInfo> items) {
+        super(context, resource);
+        List<String> suggestion = new ArrayList<>();
+        for (StockInfo i : items) {
+            suggestion.add(i.getSymbol());
+        }
+        super.addAll(suggestion);
+        this.items = items;
+        this.context = context;
+        this.layoutResourceId = resource;
     }
 
     @SuppressLint("ViewHolder")
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        String symbol=getItem(position);
+        String symbol = getItem(position);
 
-        LayoutInflater inflater=((Activity) context).getLayoutInflater();
-        convertView=inflater.inflate(layoutResourceId,parent,false);
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+        convertView = inflater.inflate(layoutResourceId, parent, false);
 
-        final TextView tvSymbol= convertView.findViewById(R.id.acItemSymbol);
-        final TextView tvShortName=convertView.findViewById(R.id.acShortName);
+        final TextView tvSymbol = convertView.findViewById(R.id.acItemSymbol);
+        final TextView tvShortName = convertView.findViewById(R.id.acShortName);
 
         tvSymbol.setText(symbol);
-        tvShortName.setText(map.get(symbol));
+        StockInfo stockInfo = items.stream().filter(items -> symbol.equals(items.getSymbol())).findFirst().orElse(null);
+        tvShortName.setText(stockInfo != null ? stockInfo.getShortName() : "");
 
         return convertView;
     }

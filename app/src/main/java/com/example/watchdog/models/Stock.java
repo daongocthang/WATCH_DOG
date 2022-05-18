@@ -12,6 +12,7 @@ public class Stock implements Serializable {
 
     private int id;
     private String symbol;
+    private String stockNo;
     private String shortName;
     private double warningPrice;
     private double lastPrice;
@@ -75,6 +76,14 @@ public class Stock implements Serializable {
 
     public void setShortName(String shortName) {
         this.shortName = shortName;
+    }
+
+    public String getStockNo() {
+        return stockNo;
+    }
+
+    public void setStockNo(String stockNo) {
+        this.stockNo = stockNo;
     }
 
     @SuppressLint("DefaultLocale")

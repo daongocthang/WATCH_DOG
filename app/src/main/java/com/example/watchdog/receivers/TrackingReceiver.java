@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.watchdog.MainActivity;
+import com.example.watchdog.activities.MainActivity;
 import com.example.watchdog.services.TrackingService;
 
 public class TrackingReceiver extends BroadcastReceiver {

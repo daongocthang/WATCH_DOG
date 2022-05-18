@@ -19,12 +19,14 @@ public class DbHandler extends SQLiteOpenHelper {
     private static final String DB_NAME = "stockDatabase";
     private static final String STOCK_TABLE = "tbl_stock";
     private static final String ID = "id";
+    private static final String STOCK_NO = "stock_no";
     private static final String SYMBOL = "symbol";
     private static final String SHORT_NAME = "shortName";
     private static final String TYPE = "type";
     private static final String WARNING = "warning";
 
     private static final String CREATE_STOCK_TABLE = "CREATE TABLE " + STOCK_TABLE + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + STOCK_NO + " TEXT, "
             + SYMBOL + " TEXT, "
             + SHORT_NAME + " TEXT, "
             + WARNING + " INTEGER, "
@@ -63,6 +65,7 @@ public class DbHandler extends SQLiteOpenHelper {
                     do {
                         Stock s = new Stock();
                         s.setId(curs.getInt(curs.getColumnIndex(ID)));
+                        s.setStockNo(curs.getString(curs.getColumnIndex(STOCK_NO)));
                         s.setSymbol(curs.getString(curs.getColumnIndex(SYMBOL)));
                         s.setShortName(curs.getString(curs.getColumnIndex(SHORT_NAME)));
                         s.setWarningPrice(curs.getDouble(curs.getColumnIndex(WARNING)));
@@ -84,6 +87,7 @@ public class DbHandler extends SQLiteOpenHelper {
 
     public void insertStock(Stock stock) {
         ContentValues cv = new ContentValues();
+        cv.put(STOCK_NO, stock.getStockNo());
         cv.put(SYMBOL, stock.getSymbol());
         cv.put(SHORT_NAME, stock.getShortName());
         cv.put(WARNING, stock.getWarningPrice());
@@ -92,8 +96,9 @@ public class DbHandler extends SQLiteOpenHelper {
         db.insert(STOCK_TABLE, null, cv);
     }
 
-    public void updateStock(int id, String symbol, String shortName, Double warning, int type) {
+    public void updateStock(int id,String stockNo, String symbol, String shortName, Double warning, int type) {
         ContentValues cv = new ContentValues();
+        cv.put(STOCK_NO, stockNo);
         cv.put(SYMBOL, symbol);
         cv.put(SHORT_NAME, shortName);
         cv.put(WARNING, warning);

@@ -1,4 +1,4 @@
-package com.example.watchdog;
+package com.example.watchdog.activities;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -15,36 +15,43 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.watchdog.AlertForm;
+import com.example.watchdog.R;
+import com.example.watchdog.RecyclerItemTouchHelper;
 import com.example.watchdog.adapter.AlertAdapter;
 import com.example.watchdog.interfaces.DialogCloseListener;
 import com.example.watchdog.models.Stock;
+import com.example.watchdog.models.StockInfo;
 import com.example.watchdog.services.TrackingService;
 import com.example.watchdog.utils.DbHandler;
 import com.example.watchdog.utils.StockCollection;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements DialogCloseListener {
-    private static final String TAG  = MainActivity.class.getSimpleName();
+    public static final String EXTRA_STOCK_INFO = "extra_stock_info";
+    private static final String EXTRA_STOCK_REALTIME = "extra_stock_realtime";
+
     public static final String ACTIVITY_FINISH = "main_activity_finish";
-    private Map<String, String> stockDex;
+    public static final String TAG = MainActivity.class.getSimpleName();
+
+    private List<StockInfo> stockDex;
     private DbHandler db;
     private AlertAdapter adapter;
     private StockCollection stockCollection;
-
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(ACTIVITY_FINISH)) {
                 finish();
             }
-            if(intent.getAction().equals(TrackingService.ACTION_NOTIFICATION_SEND)){
-                Log.e(TAG,TrackingService.ACTION_NOTIFICATION_SEND);
+            if (intent.getAction().equals(TrackingService.ACTION_NOTIFICATION_SEND)) {
+                Log.e(TAG, TrackingService.ACTION_NOTIFICATION_SEND);
                 reloadAdapter();
             }
         }
@@ -56,18 +63,18 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         setContentView(R.layout.activity_main);
         Objects.requireNonNull(getSupportActionBar()).hide();
 
+        Intent intent = getIntent();
+        stockDex = new ArrayList<>();
+        List<StockInfo> extra = (List<StockInfo>) intent.getSerializableExtra(EXTRA_STOCK_INFO);
+        if(extra!=null)
+            stockDex.addAll(extra);
+
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTIVITY_FINISH);
         registerReceiver(receiver, filter);
 
         stockCollection = new StockCollection(this);
-        stockDex = new HashMap<>();
-        stockCollection.collectAllStocks(new StockCollection.InfoResponseListener() {
-            @Override
-            public void onResponse(Map<String, String> map) {
-                stockDex.putAll(map);
-            }
-        });
 
         db = new DbHandler(this);
         db.openDb();
@@ -80,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
 
         FloatingActionButton fab = findViewById(R.id.fab);
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new RecyclerItemTouchHelper(adapter, this));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new RecyclerItemTouchHelper(adapter));
         itemTouchHelper.attachToRecyclerView(taskRecyclerView);
 
         List<Stock> stockList = db.getAllStock();
@@ -117,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     private void reloadAdapter() {
         List<Stock> dbAllStock = db.getAllStock();
         Collections.reverse(dbAllStock);
-        stockCollection.collectAdPrice(dbAllStock, new StockCollection.PriceResponseListener() {
+        stockCollection.collectMatchedPrices(dbAllStock, new StockCollection.PriceResponseListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(List<Stock> stocks) {
@@ -132,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         startService(serviceIntent);
     }
 
-    public Map<String, String> getStockDex() {
+    public List<StockInfo> getStockDex() {
         return this.stockDex;
     }
 }

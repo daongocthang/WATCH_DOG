@@ -26,6 +26,7 @@ import androidx.annotation.Nullable;
 import com.example.watchdog.adapter.StockSearchAdapter;
 import com.example.watchdog.interfaces.DialogCloseListener;
 import com.example.watchdog.models.Stock;
+import com.example.watchdog.models.StockInfo;
 import com.example.watchdog.utils.DbHandler;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -40,10 +41,10 @@ public class AlertForm extends BottomSheetDialogFragment {
     private AutoCompleteTextView newSymbolText;
     private EditText newWarningText;
     private int stockType;
-    private final Map<String, String> stockDex;
+    private final List<StockInfo> stockDex;
 
-    public AlertForm(Map<String, String> stockBox) {
-        this.stockDex = stockBox;
+    public AlertForm(List<StockInfo> stockDex) {
+        this.stockDex = stockDex;
     }
 
     @Override
@@ -124,14 +125,18 @@ public class AlertForm extends BottomSheetDialogFragment {
                 }
 
                 String symbol = newSymbolText.getText().toString();
-                String shortName = stockDex.get(symbol);
+                StockInfo stockInfo=stockDex.stream().filter(stockDex->symbol.equals(stockDex.getSymbol())).findFirst().orElse(null);
+                assert stockInfo!=null;
+                String shortName = stockInfo.getShortName();
+                String stockNo=stockInfo.getStockNo();
                 double warning = Double.parseDouble(newWarningText.getText().toString());
 
                 if (finalIsUpdate) {
-                    db.updateStock(bundle.getInt("id"), symbol, shortName, warning, stockType);
+                    db.updateStock(bundle.getInt("id"),stockNo, symbol, shortName, warning, stockType);
                 } else {
                     Stock stock = new Stock();
                     stock.setSymbol(symbol);
+                    stock.setStockNo(stockNo);
                     stock.setShortName(shortName);
                     stock.setWarningPrice(warning);
                     stock.setType(stockType);

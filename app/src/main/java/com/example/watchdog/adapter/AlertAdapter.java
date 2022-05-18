@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.watchdog.AlertForm;
 import com.example.watchdog.Constant;
-import com.example.watchdog.MainActivity;
+import com.example.watchdog.activities.MainActivity;
 import com.example.watchdog.R;
 import com.example.watchdog.models.Stock;
 import com.example.watchdog.utils.DbHandler;
@@ -55,7 +55,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
             holder.tvType.setText(Constant.LESS);
             holder.tvType.setTextColor(ContextCompat.getColor(activity, R.color.warning_dark));
 
-            if (item.getWarningPrice() > item.getLastPrice()) {
+            if (item.getWarningPrice() >= item.getLastPrice()) {
                 holder.imIcon.setVisibility(View.VISIBLE);
             }else {
                 holder.imIcon.setVisibility(View.INVISIBLE);
@@ -64,7 +64,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
             holder.tvType.setText(Constant.GREATER);
             holder.tvType.setTextColor(ContextCompat.getColor(activity, R.color.success_dark));
 
-            if (item.getWarningPrice() < item.getLastPrice()) {
+            if (item.getWarningPrice() <= item.getLastPrice()) {
                 holder.imIcon.setVisibility(View.VISIBLE);
             }else{
                 holder.imIcon.setVisibility(View.INVISIBLE);

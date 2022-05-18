@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.example.watchdog.Constant;
-import com.example.watchdog.MainActivity;
+import com.example.watchdog.activities.MainActivity;
 import com.example.watchdog.R;
 import com.example.watchdog.models.Stock;
 import com.example.watchdog.receivers.TrackingReceiver;
@@ -129,7 +129,7 @@ public class TrackingService extends Service implements Runnable, StockCollectio
                 if (currentHours < OPEN || currentHours > CLOSED)
                     continue;
 
-                stockCollection.collectAdPrice(stockList, this);
+                stockCollection.collectMatchedPrices(stockList, this);
                 Thread.sleep(PERIOD);
             } catch (InterruptedException e) {
                 e.printStackTrace();

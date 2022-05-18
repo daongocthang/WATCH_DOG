@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.watchdog.activities.MainActivity;
 import com.example.watchdog.adapter.AlertAdapter;
 
 import java.util.Objects;
@@ -19,12 +20,10 @@ import java.util.Objects;
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     private final AlertAdapter adapter;
-    private final MainActivity activity;
 
-    public RecyclerItemTouchHelper(AlertAdapter adapter, MainActivity activity) {
+    public RecyclerItemTouchHelper(AlertAdapter adapter) {
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         this.adapter = adapter;
-        this.activity = activity;
     }
 
     @Override
