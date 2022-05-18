@@ -67,39 +67,45 @@ public class StockCollection {
 
     public void collectMatchedPrices(List<Stock> stocks, PriceResponseListener responseListener) {
         String url = "https://wgateway-iboard.ssi.com.vn/graphql";
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Stock s : stocks) {
-            stringBuilder.append(String.format("'%s'", s.getStockNo()));
-            if (!stocks.get(stocks.size() - 1).equals(s)) {
-                stringBuilder.append(",");
-            }
+        List<String> params = new ArrayList<>();
+        List<String> closed = new ArrayList<>();
+        for (int i = 0; i < stocks.size(); i++) {
+            String stockNo = stocks.get(i).getStockNo();
+
+            if (closed.contains(stockNo)) continue;
+            params.add(String.format("'%s'", stockNo));
+
+            closed.add(stockNo);
         }
+
         String body = "{" +
                 "    'operationName': 'stockRealtimesByIds'," +
                 "    'variables': {" +
-                "        'ids': [" + stringBuilder.toString() + "]" +
+                "        'ids': [" + TextUtils.join(",", params) + "]" +
                 "    }," +
                 "    'query': 'query stockRealtimesByIds($ids: [String!]) {\\n  stockRealtimesByIds(ids: $ids) {\\n    stockNo\\n    stockSymbol\\n    refPrice\\n    matchedPrice\\n  }\\n}\\n'" +
                 "}";
+
         try {
             JSONObject jsonBody = new JSONObject(body.replace("'", "\""));
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    double last = 0;
                     try {
                         JSONArray data = response.getJSONObject("data").getJSONArray("stockRealtimesByIds");
-                        Log.e(TAG, "StockRealTIme: " + response.toString());
+                        Log.e(TAG, "StockRealTIme: " + data.toString());
 
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject object = data.getJSONObject(i);
                             for (Stock s : stocks) {
-                                if (s.getStockNo().equals(object.getString("stockNo")))
+                                double last;
+                                if (s.getStockNo().equals(object.getString("stockNo"))){
                                     last = object.getDouble("matchedPrice");
-                                if (last == 0) {
-                                    last = object.getDouble("refPrice");
+                                    if (last == 0) {
+                                        last = object.getDouble("refPrice");
+                                    }
+                                    s.setLastPrice(last / 1000);
                                 }
-                                s.setLastPrice(last / 1000);
                             }
                         }
 

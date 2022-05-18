@@ -13,12 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,12 +33,14 @@ import com.example.watchdog.models.StockInfo;
 import com.example.watchdog.utils.DbHandler;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class AlertForm extends BottomSheetDialogFragment {
+public class AlertForm extends BottomSheetDialogFragment{
 
     public static final String TAG = AlertForm.class.getSimpleName();
     private AutoCompleteTextView newSymbolText;
@@ -120,7 +125,7 @@ public class AlertForm extends BottomSheetDialogFragment {
                 }
 
                 if (newWarningText.getText().toString().equals("")) {
-                    newSymbolText.setError("Require");
+                    newWarningText.setError("Require");
                     return;
                 }
 
