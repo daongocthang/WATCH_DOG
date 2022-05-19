@@ -1,6 +1,7 @@
-package com.example.watchdog.activities;
+package com.standalone.watchdog.activities;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,19 +16,18 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.watchdog.AlertForm;
-import com.example.watchdog.R;
-import com.example.watchdog.RecyclerItemTouchHelper;
-import com.example.watchdog.adapter.AlertAdapter;
-import com.example.watchdog.interfaces.DialogCloseListener;
-import com.example.watchdog.models.Stock;
-import com.example.watchdog.models.StockInfo;
-import com.example.watchdog.services.TrackingService;
-import com.example.watchdog.utils.DbHandler;
-import com.example.watchdog.utils.StockCollection;
+import com.standalone.watchdog.AlertForm;
+import com.standalone.watchdog.R;
+import com.standalone.watchdog.RecyclerItemTouchHelper;
+import com.standalone.watchdog.adapter.AlertAdapter;
+import com.standalone.watchdog.interfaces.DialogCloseListener;
+import com.standalone.watchdog.models.Stock;
+import com.standalone.watchdog.models.StockInfo;
+import com.standalone.watchdog.services.TrackingService;
+import com.standalone.watchdog.utils.DbHandler;
+import com.standalone.watchdog.utils.StockCollection;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         Intent intent = getIntent();
         stockDex = new ArrayList<>();
         List<StockInfo> extra = (List<StockInfo>) intent.getSerializableExtra(EXTRA_STOCK_INFO);
-        if(extra!=null)
+        if (extra != null)
             stockDex.addAll(extra);
 
 
@@ -105,7 +105,8 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     @Override
     protected void onStart() {
         super.onStart();
-        startTrackingService();
+        if (!isServiceRunning(TrackingService.class))
+            startTrackingService();
         reloadAdapter();
     }
 
@@ -141,5 +142,15 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
 
     public List<StockInfo> getStockDex() {
         return this.stockDex;
+    }
+
+    public boolean isServiceRunning(Class<?> cls) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (cls.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

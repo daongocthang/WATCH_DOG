@@ -1,4 +1,4 @@
-package com.example.watchdog.utils;
+package com.standalone.watchdog.utils;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -8,18 +8,15 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.watchdog.models.Stock;
-import com.example.watchdog.models.StockInfo;
+import com.standalone.watchdog.models.Stock;
+import com.standalone.watchdog.models.StockInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.DoubleUnaryOperator;
 
 public class StockCollection {
     private static final String TAG = StockCollection.class.getSimpleName();

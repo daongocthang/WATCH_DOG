@@ -1,4 +1,4 @@
-package com.example.watchdog;
+package com.standalone.watchdog;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -13,34 +13,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.watchdog.adapter.StockSearchAdapter;
-import com.example.watchdog.interfaces.DialogCloseListener;
-import com.example.watchdog.models.Stock;
-import com.example.watchdog.models.StockInfo;
-import com.example.watchdog.utils.DbHandler;
+import com.standalone.watchdog.adapter.StockSearchAdapter;
+import com.standalone.watchdog.interfaces.DialogCloseListener;
+import com.standalone.watchdog.models.Stock;
+import com.standalone.watchdog.models.StockInfo;
+import com.standalone.watchdog.utils.DbHandler;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
-public class AlertForm extends BottomSheetDialogFragment{
+public class AlertForm extends BottomSheetDialogFragment {
 
     public static final String TAG = AlertForm.class.getSimpleName();
     private AutoCompleteTextView newSymbolText;
@@ -78,6 +71,13 @@ public class AlertForm extends BottomSheetDialogFragment{
 
         newWarningText = view.findViewById(R.id.newWarning);
 
+        newSymbolText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                newWarningText.requestFocus();
+                newWarningText.setSelection(newWarningText.getText().length());
+            }
+        });
         addCancelButton(newSymbolText, R.id.fromNewSymbol);
         addCancelButton(newWarningText, R.id.fromNewWarning);
 
@@ -108,7 +108,7 @@ public class AlertForm extends BottomSheetDialogFragment{
             newSymbolText.setText(stock.getSymbol());
             newWarningText.setText(String.valueOf(stock.getWarningPrice()));
             radioGroup.check(stock.getType() == 0 ? R.id.radio_less : R.id.radio_greater);
-        }else{
+        } else {
             newSymbolText.requestFocus();
         }
 
@@ -130,14 +130,14 @@ public class AlertForm extends BottomSheetDialogFragment{
                 }
 
                 String symbol = newSymbolText.getText().toString();
-                StockInfo stockInfo=stockDex.stream().filter(stockDex->symbol.equals(stockDex.getSymbol())).findFirst().orElse(null);
-                assert stockInfo!=null;
+                StockInfo stockInfo = stockDex.stream().filter(stockDex -> symbol.equals(stockDex.getSymbol())).findFirst().orElse(null);
+                assert stockInfo != null;
                 String shortName = stockInfo.getShortName();
-                String stockNo=stockInfo.getStockNo();
+                String stockNo = stockInfo.getStockNo();
                 double warning = Double.parseDouble(newWarningText.getText().toString());
 
                 if (finalIsUpdate) {
-                    db.updateStock(bundle.getInt("id"),stockNo, symbol, shortName, warning, stockType);
+                    db.updateStock(bundle.getInt("id"), stockNo, symbol, shortName, warning, stockType);
                 } else {
                     Stock stock = new Stock();
                     stock.setSymbol(symbol);

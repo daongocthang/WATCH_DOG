@@ -1,4 +1,4 @@
-package com.example.watchdog;
+package com.standalone.watchdog;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -12,8 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.watchdog.activities.MainActivity;
-import com.example.watchdog.adapter.AlertAdapter;
+import com.standalone.watchdog.adapter.AlertAdapter;
 
 import java.util.Objects;
 

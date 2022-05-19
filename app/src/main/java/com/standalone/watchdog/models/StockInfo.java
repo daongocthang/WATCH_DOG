@@ -1,4 +1,4 @@
-package com.example.watchdog.models;
+package com.standalone.watchdog.models;
 
 import java.io.Serializable;
 

@@ -1,6 +1,4 @@
-package com.example.watchdog.services;
-
-import static com.example.watchdog.App.CHANNEL_ID;
+package com.standalone.watchdog.services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -11,13 +9,14 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.example.watchdog.Constant;
-import com.example.watchdog.activities.MainActivity;
-import com.example.watchdog.R;
-import com.example.watchdog.models.Stock;
-import com.example.watchdog.receivers.TrackingReceiver;
-import com.example.watchdog.utils.DbHandler;
-import com.example.watchdog.utils.StockCollection;
+import com.standalone.watchdog.Constant;
+import com.standalone.watchdog.R;
+import com.standalone.watchdog.activities.MainActivity;
+import com.standalone.watchdog.models.Stock;
+import com.standalone.watchdog.receivers.TrackingReceiver;
+import com.standalone.watchdog.utils.DbHandler;
+import com.standalone.watchdog.utils.StockCollection;
+import com.standalone.watchdog.App;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -99,11 +98,11 @@ public class TrackingService extends Service implements Runnable, StockCollectio
         actionIntent.setAction(ACTION_SERVICE_STOP);
         PendingIntent pIntentAction = PendingIntent.getBroadcast(this, 0, actionIntent, PendingIntent.FLAG_IMMUTABLE);
 
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+        Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(content)
                 .setContentIntent(pIntentActivity)
-                .setSmallIcon(R.drawable.logo)
+                .setSmallIcon(R.drawable.small_logo)
                 .addAction(R.drawable.ic_baseline_close, Constant.EXIT, pIntentAction)
                 .setSilent(silent)
                 // set high priority for Heads Up Notification

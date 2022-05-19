@@ -1,15 +1,13 @@
-package com.example.watchdog.activities;
+package com.standalone.watchdog.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.View;
 
-import com.example.watchdog.R;
-import com.example.watchdog.models.StockInfo;
-import com.example.watchdog.utils.StockCollection;
+import com.standalone.watchdog.R;
+import com.standalone.watchdog.models.StockInfo;
+import com.standalone.watchdog.utils.StockCollection;
 
 import java.io.Serializable;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.watchdog.adapter;
+package com.standalone.watchdog.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -8,17 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.watchdog.AlertForm;
-import com.example.watchdog.Constant;
-import com.example.watchdog.activities.MainActivity;
-import com.example.watchdog.R;
-import com.example.watchdog.models.Stock;
-import com.example.watchdog.utils.DbHandler;
+import com.standalone.watchdog.AlertForm;
+import com.standalone.watchdog.Constant;
+import com.standalone.watchdog.R;
+import com.standalone.watchdog.activities.MainActivity;
+
+import com.standalone.watchdog.models.Stock;
+import com.standalone.watchdog.utils.DbHandler;
 
 import java.util.List;
 

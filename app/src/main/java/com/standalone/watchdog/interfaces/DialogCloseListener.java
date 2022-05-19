@@ -1,4 +1,4 @@
-package com.example.watchdog.interfaces;
+package com.standalone.watchdog.interfaces;
 
 import android.content.DialogInterface;
 

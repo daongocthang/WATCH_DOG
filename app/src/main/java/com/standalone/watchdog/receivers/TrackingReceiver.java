@@ -1,11 +1,11 @@
-package com.example.watchdog.receivers;
+package com.standalone.watchdog.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.watchdog.activities.MainActivity;
-import com.example.watchdog.services.TrackingService;
+import com.standalone.watchdog.activities.MainActivity;
+import com.standalone.watchdog.services.TrackingService;
 
 public class TrackingReceiver extends BroadcastReceiver {
     @Override
