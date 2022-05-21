@@ -12,4 +12,5 @@ public class Constant {
     public static final String NOTIFICATION_TITLE_WARNING = "Chạm mức cảnh báo";
     public static final String REQUIRE="Bắt buộc";
     public static final String INVALID_SYMBOL="Mã CP không tồn tại";
+    public static final String NETWORK_ERROR="Lỗi kết nối Internet";
 }

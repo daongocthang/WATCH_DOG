@@ -9,8 +9,9 @@
     <string name="sample_digit">10.0</string>
     <string name="sample_word">AAA</string>
     <string name="sample_phrase">Công ty Cổ phần Ngoại thương và Phát triển Đầu tư Thành phố Hồ Chí Minh (FIDECO) được thành lập năm 1989, với tiền thân là Công ty Phát triển Thủy hải sản Thành phố Hồ Chí Minh.</string>
-
     <string name="sample_icon">icon</string>
     <string name="clear_text">clear_text</string>
     <string name="tooltip_info">Chạm mức cảnh báo</string>
+    <string name="network_error">Lỗi kết nối Internet</string>
+    <string name="try_again">Thử lại</string>
 </resources>

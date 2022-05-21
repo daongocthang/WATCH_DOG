@@ -28,6 +28,7 @@ import com.standalone.stockalarm.models.StockInfo;
 import com.standalone.stockalarm.services.TrackingService;
 import com.standalone.stockalarm.utils.DbHandler;
 import com.standalone.stockalarm.utils.StockCollection;
+import com.standalone.stockalarm.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     @Override
     protected void onStart() {
         super.onStart();
-        if (!isServiceRunning(TrackingService.class))
+        if (!Utils.isServiceRunning(this, TrackingService.class))
             startTrackingService();
         reloadAdapter();
     }
@@ -124,6 +125,11 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     }
 
     private void reloadAdapter() {
+        if (!Utils.isNetworkConnecting(this)) {
+            startActivity(new Intent(this, ErrorActivity.class));
+            finish();
+        }
+
         List<Stock> dbAllStock = db.getAllStock();
         Collections.reverse(dbAllStock);
         stockCollection.collectMatchedPrices(dbAllStock, new StockCollection.PriceResponseListener() {
@@ -145,13 +151,5 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         return this.stockDex;
     }
 
-    public boolean isServiceRunning(Class<?> cls) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (cls.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 }

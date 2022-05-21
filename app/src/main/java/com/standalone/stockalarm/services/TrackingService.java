@@ -12,12 +12,12 @@ import androidx.core.app.NotificationCompat;
 import com.standalone.stockalarm.App;
 import com.standalone.stockalarm.Constant;
 import com.standalone.stockalarm.R;
-import com.standalone.stockalarm.activities.MainActivity;
 import com.standalone.stockalarm.activities.SplashActivity;
 import com.standalone.stockalarm.models.Stock;
 import com.standalone.stockalarm.receivers.TrackingReceiver;
 import com.standalone.stockalarm.utils.DbHandler;
 import com.standalone.stockalarm.utils.StockCollection;
+import com.standalone.stockalarm.utils.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,6 +41,7 @@ public class TrackingService extends Service implements Runnable, StockCollectio
     private StockCollection stockCollection;
     private SimpleDateFormat simpleDateFormat;
     private Calendar calendar;
+    private boolean alertedNetworkError;
 
     @Override
     public void onCreate() {
@@ -83,9 +84,7 @@ public class TrackingService extends Service implements Runnable, StockCollectio
     }
 
     public synchronized void pullStocks() {
-        //TODO: add stockList
         stockList = db.getAllStock();
-
         // stop if no work
         if (stockList.size() == 0)
             stopSelf();
@@ -123,6 +122,19 @@ public class TrackingService extends Service implements Runnable, StockCollectio
         while (true) {
             try {
                 if (!running) break;
+
+                if (!Utils.isNetworkConnecting(this)) {
+                    if (!alertedNetworkError) {
+                        sendNotification(Constant.NETWORK_ERROR, null, false);
+                        alertedNetworkError = true;
+                    }
+                    continue;
+                } else {
+                    if (alertedNetworkError) {
+                        sendNotification(Constant.NOTIFICATION_TITLE_NOTHING, null, true);
+                        alertedNetworkError = false;
+                    }
+                }
 
                 calendar.setTime(new Date());
                 int currentHours = calendar.get(Calendar.HOUR_OF_DAY);
