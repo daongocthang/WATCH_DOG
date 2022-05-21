@@ -1,4 +1,4 @@
-package com.standalone.watchdog;
+package com.standalone.stockalarm;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -23,12 +23,12 @@ import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.standalone.watchdog.adapter.StockSearchAdapter;
-import com.standalone.watchdog.interfaces.DialogCloseListener;
-import com.standalone.watchdog.models.Stock;
-import com.standalone.watchdog.models.StockInfo;
-import com.standalone.watchdog.utils.DbHandler;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.standalone.stockalarm.adapter.StockSearchAdapter;
+import com.standalone.stockalarm.interfaces.DialogCloseListener;
+import com.standalone.stockalarm.models.Stock;
+import com.standalone.stockalarm.models.StockInfo;
+import com.standalone.stockalarm.utils.DbHandler;
 
 import java.util.List;
 import java.util.Objects;
@@ -119,23 +119,37 @@ public class AlertForm extends BottomSheetDialogFragment {
         newStockSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // check and get SYMBOL from the text field
                 if (newSymbolText.getText().toString().equals("")) {
-                    newSymbolText.setError("Require");
-                    return;
-                }
-
-                if (newWarningText.getText().toString().equals("")) {
-                    newWarningText.setError("Require");
+                    newSymbolText.setError(Constant.REQUIRE);
                     return;
                 }
 
                 String symbol = newSymbolText.getText().toString();
-                StockInfo stockInfo = stockDex.stream().filter(stockDex -> symbol.equals(stockDex.getSymbol())).findFirst().orElse(null);
-                assert stockInfo != null;
+                StockInfo stockInfo = stockDex.stream().filter(s -> symbol.equals(s.getSymbol())).findFirst().orElse(null);
+                if (stockInfo == null) {
+                    newSymbolText.setError(Constant.INVALID_SYMBOL);
+                    return;
+                }
+
+                // check and get PRICE from the text field
+                if (newWarningText.getText().toString().equals("")) {
+                    newWarningText.setError(Constant.REQUIRE);
+                    return;
+                }
+
+                double warning = 0;
+                try {
+                    warning = Double.parseDouble(newWarningText.getText().toString());
+                } catch (NumberFormatException e) {
+                    warning = 0.0;
+                }
+
+                // get SHORTNAME and STOCK_NO
                 String shortName = stockInfo.getShortName();
                 String stockNo = stockInfo.getStockNo();
-                double warning = Double.parseDouble(newWarningText.getText().toString());
 
+                // Submit
                 if (finalIsUpdate) {
                     db.updateStock(bundle.getInt("id"), stockNo, symbol, shortName, warning, stockType);
                 } else {

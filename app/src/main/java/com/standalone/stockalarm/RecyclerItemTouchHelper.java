@@ -1,4 +1,4 @@
-package com.standalone.watchdog;
+package com.standalone.stockalarm;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.standalone.watchdog.adapter.AlertAdapter;
+import com.standalone.stockalarm.adapter.AlertAdapter;
 
 import java.util.Objects;
 

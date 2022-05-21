@@ -1,4 +1,4 @@
-package com.standalone.watchdog.services;
+package com.standalone.stockalarm.services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -9,14 +9,15 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.standalone.watchdog.Constant;
-import com.standalone.watchdog.R;
-import com.standalone.watchdog.activities.MainActivity;
-import com.standalone.watchdog.models.Stock;
-import com.standalone.watchdog.receivers.TrackingReceiver;
-import com.standalone.watchdog.utils.DbHandler;
-import com.standalone.watchdog.utils.StockCollection;
-import com.standalone.watchdog.App;
+import com.standalone.stockalarm.App;
+import com.standalone.stockalarm.Constant;
+import com.standalone.stockalarm.R;
+import com.standalone.stockalarm.activities.MainActivity;
+import com.standalone.stockalarm.activities.SplashActivity;
+import com.standalone.stockalarm.models.Stock;
+import com.standalone.stockalarm.receivers.TrackingReceiver;
+import com.standalone.stockalarm.utils.DbHandler;
+import com.standalone.stockalarm.utils.StockCollection;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -91,7 +92,7 @@ public class TrackingService extends Service implements Runnable, StockCollectio
     }
 
     public void sendNotification(String title, String content, boolean silent) {
-        Intent activityIntent = new Intent(this, MainActivity.class);
+        Intent activityIntent = new Intent(this, SplashActivity.class);
         PendingIntent pIntentActivity = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Intent actionIntent = new Intent(this, TrackingReceiver.class);
@@ -125,7 +126,7 @@ public class TrackingService extends Service implements Runnable, StockCollectio
 
                 calendar.setTime(new Date());
                 int currentHours = calendar.get(Calendar.HOUR_OF_DAY);
-                if (currentHours < OPEN || currentHours > CLOSED)
+                if (currentHours < OPEN || currentHours >= CLOSED)
                     continue;
 
                 stockCollection.collectMatchedPrices(stockList, this);

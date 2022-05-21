@@ -1,11 +1,13 @@
-package com.standalone.watchdog.models;
+package com.standalone.stockalarm.models;
 
 import java.io.Serializable;
 
 public class StockInfo implements Serializable {
-    String stockNo;
-    String symbol;
-    String shortName;
+    private final static String LONG_PHRASES ="(?i)công (?i)ty (?i)cổ (?i)phần";
+    private final static String SHORT_PHRASES ="CTCP";
+    private String stockNo;
+    private String symbol;
+    private String shortName;
 
 
     public StockInfo() {
@@ -32,6 +34,6 @@ public class StockInfo implements Serializable {
     }
 
     public void setShortName(String shortName) {
-        this.shortName = shortName;
+        this.shortName = shortName.replaceAll(LONG_PHRASES,SHORT_PHRASES);
     }
 }

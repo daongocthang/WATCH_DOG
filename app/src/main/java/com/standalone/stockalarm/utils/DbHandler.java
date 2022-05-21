@@ -1,4 +1,4 @@
-package com.standalone.watchdog.utils;
+package com.standalone.stockalarm.utils;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
@@ -7,7 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.standalone.watchdog.models.Stock;
+import com.standalone.stockalarm.models.Stock;
 
 import java.util.ArrayList;
 import java.util.List;

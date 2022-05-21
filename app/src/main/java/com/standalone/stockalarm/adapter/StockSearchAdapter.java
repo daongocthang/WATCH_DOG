@@ -1,4 +1,4 @@
-package com.standalone.watchdog.adapter;
+package com.standalone.stockalarm.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,8 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.standalone.watchdog.R;
-import com.standalone.watchdog.models.StockInfo;
+import com.standalone.stockalarm.R;
+import com.standalone.stockalarm.models.StockInfo;
 
 import java.util.ArrayList;
 import java.util.List;

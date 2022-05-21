@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.standalone.watchdog">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.standalone.stockalarm">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:name="com.standalone.watchdog.App"
+        android:name="com.standalone.stockalarm.App"
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.standalone.watchdog.activities.SplashActivity"
+        <activity android:name="com.standalone.stockalarm.activities.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,12 +22,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.standalone.watchdog.activities.MainActivity"
+            android:name="com.standalone.stockalarm.activities.MainActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor">
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
         </activity>
-        <service android:name="com.standalone.watchdog.services.TrackingService" android:exported="false"/>
-        <receiver android:name="com.standalone.watchdog.receivers.TrackingReceiver" android:exported="false"/>
+        <service android:name="com.standalone.stockalarm.services.TrackingService" android:exported="false"/>
+        <receiver android:name="com.standalone.stockalarm.receivers.TrackingReceiver" android:exported="false"/>
     </application>
 
 </manifest>

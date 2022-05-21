@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">StockAlarm</string>
     <string name="save">Lưu</string>
-    <string name="new_symbol">Mã CK</string>
+    <string name="new_symbol">Mã CP</string>
     <string name="new_warning">Giá</string>
     <string name="title_alerts">Danh mục cảnh báo</string>
     <string name="radio_less">Nhỏ hơn</string>

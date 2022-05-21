@@ -1,4 +1,4 @@
-package com.standalone.watchdog.activities;
+package com.standalone.stockalarm.activities;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,17 +17,17 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.standalone.watchdog.AlertForm;
-import com.standalone.watchdog.R;
-import com.standalone.watchdog.RecyclerItemTouchHelper;
-import com.standalone.watchdog.adapter.AlertAdapter;
-import com.standalone.watchdog.interfaces.DialogCloseListener;
-import com.standalone.watchdog.models.Stock;
-import com.standalone.watchdog.models.StockInfo;
-import com.standalone.watchdog.services.TrackingService;
-import com.standalone.watchdog.utils.DbHandler;
-import com.standalone.watchdog.utils.StockCollection;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.standalone.stockalarm.AlertForm;
+import com.standalone.stockalarm.R;
+import com.standalone.stockalarm.RecyclerItemTouchHelper;
+import com.standalone.stockalarm.adapter.AlertAdapter;
+import com.standalone.stockalarm.interfaces.DialogCloseListener;
+import com.standalone.stockalarm.models.Stock;
+import com.standalone.stockalarm.models.StockInfo;
+import com.standalone.stockalarm.services.TrackingService;
+import com.standalone.stockalarm.utils.DbHandler;
+import com.standalone.stockalarm.utils.StockCollection;
 
 import java.util.ArrayList;
 import java.util.Collections;

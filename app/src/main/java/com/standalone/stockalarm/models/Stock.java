@@ -1,4 +1,4 @@
-package com.standalone.watchdog.models;
+package com.standalone.stockalarm.models;
 
 import android.annotation.SuppressLint;
 
