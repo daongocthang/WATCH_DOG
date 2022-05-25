@@ -174,4 +174,9 @@ public class TrackingService extends Service implements Runnable, StockCollectio
         if (notifiable)
             sendNotification(Constant.NOTIFICATION_TITLE_WARNING, stringBuilder.toString(), false);
     }
+
+    @Override
+    public void onError() {
+        //Nothing
+    }
 }

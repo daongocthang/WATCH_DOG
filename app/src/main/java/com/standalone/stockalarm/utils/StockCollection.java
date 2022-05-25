@@ -117,6 +117,7 @@ public class StockCollection {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e(TAG, "JsonObjectRequest onErrorResponse: " + error.getMessage());
+                    responseListener.onError();
                 }
             });
             HttpVolley.getInstance(context).getRequestQueue().add(request);
@@ -136,6 +137,7 @@ public class StockCollection {
 
     public interface PriceResponseListener {
         void onResponse(List<Stock> stocks);
+        void onError();
     }
 
     public interface InfoResponseListener {

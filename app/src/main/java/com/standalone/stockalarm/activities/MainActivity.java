@@ -1,13 +1,11 @@
 package com.standalone.stockalarm.activities;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -137,6 +135,13 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
             @Override
             public void onResponse(List<Stock> stocks) {
                 adapter.setTasks(stocks);
+                adapter.notifyDataSetChanged();
+            }
+
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onError() {
+                adapter.setTasks(dbAllStock);
                 adapter.notifyDataSetChanged();
             }
         });
