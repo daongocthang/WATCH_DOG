@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -96,7 +97,7 @@ public class StockCollection {
                             JSONObject object = data.getJSONObject(i);
                             for (Stock s : stocks) {
                                 double last;
-                                if (s.getStockNo().equals(object.getString("stockNo"))){
+                                if (s.getStockNo().equals(object.getString("stockNo"))) {
                                     last = object.getDouble("matchedPrice");
                                     if (last == 0) {
                                         last = object.getDouble("refPrice");
@@ -120,6 +121,13 @@ public class StockCollection {
                     responseListener.onError();
                 }
             });
+
+            request.setRetryPolicy(new DefaultRetryPolicy(
+                    DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            ));
+
             HttpVolley.getInstance(context).getRequestQueue().add(request);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -137,6 +145,7 @@ public class StockCollection {
 
     public interface PriceResponseListener {
         void onResponse(List<Stock> stocks);
+
         void onError();
     }
 
