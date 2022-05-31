@@ -1,4 +1,4 @@
-package com.standalone.stockalarm.adapter;
+package com.standalone.watchdog.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,13 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.standalone.stockalarm.AlertForm;
-import com.standalone.stockalarm.Constant;
-import com.standalone.stockalarm.R;
-import com.standalone.stockalarm.activities.MainActivity;
+import com.standalone.watchdog.AlertForm;
+import com.standalone.watchdog.Constant;
+import com.standalone.watchdog.R;
+import com.standalone.watchdog.activities.MainActivity;
 
-import com.standalone.stockalarm.models.Stock;
-import com.standalone.stockalarm.utils.DbHandler;
+import com.standalone.watchdog.models.Stock;
+import com.standalone.watchdog.utils.DbHandler;
 
 import java.util.List;
 

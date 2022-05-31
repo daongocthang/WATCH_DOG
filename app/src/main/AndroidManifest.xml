@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.standalone.stockalarm">
+    package="com.standalone.watchdog">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name="com.standalone.stockalarm.App"
+        android:name="com.standalone.watchdog.App"
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
@@ -16,12 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.ErrorActivity"
+            android:name="com.standalone.watchdog.activities.ErrorActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".activities.SplashActivity"
+            android:name="com.standalone.watchdog.activities.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
@@ -32,17 +32,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.standalone.watchdog.activities.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
         <service
-            android:name="com.standalone.stockalarm.services.TrackingService"
+            android:name="com.standalone.watchdog.services.TrackingService"
             android:exported="false" />
 
         <receiver
-            android:name="com.standalone.stockalarm.receivers.TrackingReceiver"
+            android:name="com.standalone.watchdog.receivers.TrackingReceiver"
             android:exported="false" />
     </application>
 

@@ -1,4 +1,4 @@
-package com.standalone.stockalarm;
+package com.standalone.watchdog;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -24,11 +24,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.standalone.stockalarm.adapter.StockSearchAdapter;
-import com.standalone.stockalarm.interfaces.DialogCloseListener;
-import com.standalone.stockalarm.models.Stock;
-import com.standalone.stockalarm.models.StockInfo;
-import com.standalone.stockalarm.utils.DbHandler;
+import com.standalone.watchdog.adapter.StockSearchAdapter;
+import com.standalone.watchdog.interfaces.DialogCloseListener;
+import com.standalone.watchdog.models.Stock;
+import com.standalone.watchdog.models.StockInfo;
+import com.standalone.watchdog.utils.DbHandler;
 
 import java.util.List;
 import java.util.Objects;

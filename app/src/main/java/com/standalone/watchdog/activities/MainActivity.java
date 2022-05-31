@@ -1,4 +1,4 @@
-package com.standalone.stockalarm.activities;
+package com.standalone.watchdog.activities;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -16,17 +16,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.standalone.stockalarm.AlertForm;
-import com.standalone.stockalarm.R;
-import com.standalone.stockalarm.RecyclerItemTouchHelper;
-import com.standalone.stockalarm.adapter.AlertAdapter;
-import com.standalone.stockalarm.interfaces.DialogCloseListener;
-import com.standalone.stockalarm.models.Stock;
-import com.standalone.stockalarm.models.StockInfo;
-import com.standalone.stockalarm.services.TrackingService;
-import com.standalone.stockalarm.utils.DbHandler;
-import com.standalone.stockalarm.utils.StockCollection;
-import com.standalone.stockalarm.utils.Utils;
+import com.standalone.watchdog.AlertForm;
+import com.standalone.watchdog.R;
+import com.standalone.watchdog.RecyclerItemTouchHelper;
+import com.standalone.watchdog.adapter.AlertAdapter;
+import com.standalone.watchdog.interfaces.DialogCloseListener;
+import com.standalone.watchdog.models.Stock;
+import com.standalone.watchdog.models.StockInfo;
+import com.standalone.watchdog.services.TrackingService;
+import com.standalone.watchdog.utils.DbHandler;
+import com.standalone.watchdog.utils.StockCollection;
+import com.standalone.watchdog.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +35,6 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements DialogCloseListener {
     public static final String EXTRA_STOCK_INFO = "extra_stock_info";
-    private static final String EXTRA_STOCK_REALTIME = "extra_stock_realtime";
 
     public static final String ACTIVITY_FINISH = "main_activity_finish";
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -69,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         List<StockInfo> extra = (List<StockInfo>) intent.getSerializableExtra(EXTRA_STOCK_INFO);
         if (extra != null)
             stockDex.addAll(extra);
-
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTIVITY_FINISH);

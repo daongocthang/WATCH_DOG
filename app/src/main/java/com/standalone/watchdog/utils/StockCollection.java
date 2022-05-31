@@ -1,4 +1,4 @@
-package com.standalone.stockalarm.utils;
+package com.standalone.watchdog.utils;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -9,8 +9,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.standalone.stockalarm.models.Stock;
-import com.standalone.stockalarm.models.StockInfo;
+import com.standalone.watchdog.models.Stock;
+import com.standalone.watchdog.models.StockInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;

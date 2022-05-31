@@ -1,4 +1,4 @@
-package com.standalone.stockalarm;
+package com.standalone.watchdog;
 
 import android.app.Application;
 import android.app.NotificationChannel;

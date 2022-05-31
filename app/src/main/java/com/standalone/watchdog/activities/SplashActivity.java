@@ -1,16 +1,15 @@
-package com.standalone.stockalarm.activities;
+package com.standalone.watchdog.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
-import com.standalone.stockalarm.R;
-import com.standalone.stockalarm.models.StockInfo;
-import com.standalone.stockalarm.utils.StockCollection;
-import com.standalone.stockalarm.utils.Utils;
+import com.standalone.watchdog.R;
+import com.standalone.watchdog.models.StockInfo;
+import com.standalone.watchdog.utils.StockCollection;
+import com.standalone.watchdog.utils.Utils;
 
 import java.io.Serializable;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.standalone.stockalarm.utils;
+package com.standalone.watchdog.utils;
 
 import android.content.Context;
 

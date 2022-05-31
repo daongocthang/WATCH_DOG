@@ -1,4 +1,4 @@
-package com.standalone.stockalarm;
+package com.standalone.watchdog;
 
 public class Constant {
     public static final String GREATER = ">";

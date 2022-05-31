@@ -1,4 +1,4 @@
-package com.standalone.stockalarm.interfaces;
+package com.standalone.watchdog.interfaces;
 
 import android.content.DialogInterface;
 

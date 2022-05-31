@@ -1,11 +1,11 @@
-package com.standalone.stockalarm.receivers;
+package com.standalone.watchdog.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.standalone.stockalarm.activities.MainActivity;
-import com.standalone.stockalarm.services.TrackingService;
+import com.standalone.watchdog.activities.MainActivity;
+import com.standalone.watchdog.services.TrackingService;
 
 public class TrackingReceiver extends BroadcastReceiver {
     @Override
