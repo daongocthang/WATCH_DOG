@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     private DbHandler db;
     private AlertAdapter adapter;
     private StockCollection stockCollection;
+    private Boolean hasError;
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -107,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         super.onStart();
         if (!Utils.isServiceRunning(this, TrackingService.class))
             startTrackingService();
+
+        hasError = false;
         reloadAdapter();
     }
 
@@ -122,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         startTrackingService();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void reloadAdapter() {
         if (!Utils.isNetworkConnecting(this)) {
             startActivity(new Intent(this, ErrorActivity.class));
@@ -130,6 +134,11 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
 
         List<Stock> dbAllStock = db.getAllStock();
         Collections.reverse(dbAllStock);
+        if (hasError) {
+            adapter.setTasks(dbAllStock);
+            adapter.notifyDataSetChanged();
+            return;
+        }
         stockCollection.collectMatchedPrices(dbAllStock, new StockCollection.PriceResponseListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -141,8 +150,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onError() {
-                adapter.setTasks(dbAllStock);
-                adapter.notifyDataSetChanged();
+                hasError = true;
             }
         });
     }
@@ -155,6 +163,4 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     public List<StockInfo> getStockDex() {
         return this.stockDex;
     }
-
-
 }

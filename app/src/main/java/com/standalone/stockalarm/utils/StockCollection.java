@@ -145,7 +145,6 @@ public class StockCollection {
 
     public interface PriceResponseListener {
         void onResponse(List<Stock> stocks);
-
         void onError();
     }
 
