@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -22,6 +23,7 @@ import com.standalone.watchdog.utils.Utils;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.List;
 
 public class TrackingService extends Service implements Runnable, StockCollection.PriceResponseListener {
@@ -60,7 +62,7 @@ public class TrackingService extends Service implements Runnable, StockCollectio
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         pullStocks();
-        sendNotification(Constant.NOTIFICATION_TITLE_NOTHING, null, true);
+        sendNotification(Constant.NOTIFICATION_TITLE_NOTHING, null, null, true);
 
         if (worker == null) {
             worker = new Thread(this);
@@ -90,7 +92,7 @@ public class TrackingService extends Service implements Runnable, StockCollectio
             stopSelf();
     }
 
-    public void sendNotification(String title, String content, boolean silent) {
+    public void sendNotification(String title, String content, String expContent, boolean silent) {
         Intent activityIntent = new Intent(this, SplashActivity.class);
         PendingIntent pIntentActivity = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
@@ -98,7 +100,7 @@ public class TrackingService extends Service implements Runnable, StockCollectio
         actionIntent.setAction(ACTION_SERVICE_STOP);
         PendingIntent pIntentAction = PendingIntent.getBroadcast(this, 0, actionIntent, PendingIntent.FLAG_IMMUTABLE);
 
-        Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, App.CHANNEL_ID)
                 .setContentTitle(title)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(content))
                 .setContentText(content)
@@ -108,9 +110,12 @@ public class TrackingService extends Service implements Runnable, StockCollectio
                 .setSilent(silent)
                 // set high priority for Heads Up Notification
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .build();
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
+        if (!TextUtils.isEmpty(expContent)) {
+            builder.setStyle(new NotificationCompat.BigTextStyle().bigText(expContent));
+        }
 
+        Notification notification = builder.build();
         startForeground(1, notification);
 
         Intent broadcastIntent = new Intent();
@@ -126,13 +131,13 @@ public class TrackingService extends Service implements Runnable, StockCollectio
 
                 if (!Utils.isNetworkConnecting(this)) {
                     if (!alertedNetworkError) {
-                        sendNotification(Constant.NETWORK_ERROR, null, false);
+                        sendNotification(Constant.NETWORK_ERROR, null, null, false);
                         alertedNetworkError = true;
                     }
                     continue;
                 } else {
                     if (alertedNetworkError) {
-                        sendNotification(Constant.NOTIFICATION_TITLE_NOTHING, null, true);
+                        sendNotification(Constant.NOTIFICATION_TITLE_NOTHING, null, null, true);
                         alertedNetworkError = false;
                     }
                 }
@@ -152,17 +157,25 @@ public class TrackingService extends Service implements Runnable, StockCollectio
 
     @Override
     public void onResponse(List<Stock> stocks) {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder contentText = new StringBuilder();
+        StringBuilder bigContentText = new StringBuilder();
         String strDate = simpleDateFormat.format(calendar.getTime());
         boolean notifiable = false;
-        stringBuilder.append(String.format("[ %s ]", strDate));
+        contentText.append(String.format("[ %s ]%5s", strDate, " "));
+        bigContentText.append(String.format("%-10s\t%10s\t%15s %n",
+                Constant.NOTIFICATION_COLS.get("symbol"),
+                Constant.NOTIFICATION_COLS.get("alarm"),
+                Constant.NOTIFICATION_COLS.get("market")
+        ));
         for (Stock s : stocks) {
             boolean alert = s.getWarningPrice() <= s.getLastPrice();
             if (s.getType() == Stock.LESS)
                 alert = s.getWarningPrice() >= s.getLastPrice();
 
             if (alert) {
-                stringBuilder.append(String.format(" %s%s%.2f ", s.getSymbol(), s.getType() == Stock.LESS ? "<" : ">", s.getWarningPrice()));
+                String level = new Formatter().format("%s %.2f", s.getType() == Stock.LESS ? "<" : ">", s.getWarningPrice()).toString();
+                contentText.append(new Formatter().format("%s%-10s", s.getSymbol(), level.replace(" ", "")));
+                bigContentText.append(new Formatter().format("%-10s\t%10s\t%18.2f %n", s.getSymbol(), level, s.getLastPrice()));
                 if (!s.isAlerted()) {
                     s.setAlerted(true);
                     notifiable = true;
@@ -173,7 +186,7 @@ public class TrackingService extends Service implements Runnable, StockCollectio
         }
 
         if (notifiable)
-            sendNotification(Constant.NOTIFICATION_TITLE_WARNING, stringBuilder.toString(), false);
+            sendNotification(Constant.NOTIFICATION_TITLE_WARNING, contentText.toString(), bigContentText.toString(), false);
     }
 
     @Override
