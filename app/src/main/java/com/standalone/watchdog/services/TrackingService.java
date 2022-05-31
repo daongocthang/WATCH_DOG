@@ -92,7 +92,7 @@ public class TrackingService extends Service implements Runnable, StockCollectio
 
     public void sendNotification(String title, String content, boolean silent) {
         Intent activityIntent = new Intent(this, SplashActivity.class);
-        PendingIntent pIntentActivity = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pIntentActivity = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         Intent actionIntent = new Intent(this, TrackingReceiver.class);
         actionIntent.setAction(ACTION_SERVICE_STOP);
@@ -100,6 +100,7 @@ public class TrackingService extends Service implements Runnable, StockCollectio
 
         Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_ID)
                 .setContentTitle(title)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(content))
                 .setContentText(content)
                 .setContentIntent(pIntentActivity)
                 .setSmallIcon(R.drawable.small_logo)
