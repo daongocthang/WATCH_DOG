@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     private DbHandler db;
     private AlertAdapter adapter;
     private StockCollection stockCollection;
-    private Boolean hasError;
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -107,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         if (!Utils.isServiceRunning(this, TrackingService.class))
             startTrackingService();
 
-        hasError = false;
         reloadAdapter();
     }
 
@@ -132,15 +130,16 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
 
         List<Stock> dbAllStock = db.getAllStock();
         Collections.reverse(dbAllStock);
-        if (hasError) {
-            adapter.setTasks(dbAllStock);
-            adapter.notifyDataSetChanged();
-            return;
-        }
+
+        // display default row from db
+        adapter.setTasks(dbAllStock);
+        adapter.notifyDataSetChanged();
+
         stockCollection.collectMatchedPrices(dbAllStock, new StockCollection.PriceResponseListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(List<Stock> stocks) {
+                // display row with responses
                 adapter.setTasks(stocks);
                 adapter.notifyDataSetChanged();
             }
@@ -148,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onError() {
-                hasError = true;
             }
         });
     }
