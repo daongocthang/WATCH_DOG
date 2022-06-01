@@ -144,7 +144,8 @@ public class TrackingService extends Service implements Runnable, StockCollectio
 
                 calendar.setTime(new Date());
                 int currentHours = calendar.get(Calendar.HOUR_OF_DAY);
-                if (currentHours < OPEN || currentHours >= CLOSED)
+                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                if (currentHours < OPEN || currentHours >= CLOSED || dayOfWeek == Calendar.SUNDAY || dayOfWeek == Calendar.SATURDAY)
                     continue;
 
                 stockCollection.collectMatchedPrices(stockList, this);
@@ -168,6 +169,8 @@ public class TrackingService extends Service implements Runnable, StockCollectio
                 Constant.NOTIFICATION_COLS.get("market")
         ));
         for (Stock s : stocks) {
+            if (s.getLastPrice() == 0) continue;
+
             boolean alert = s.getWarningPrice() <= s.getLastPrice();
             if (s.getType() == Stock.LESS)
                 alert = s.getWarningPrice() >= s.getLastPrice();
