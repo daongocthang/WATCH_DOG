@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constant {
-    public static final String GREATER = ">";
-    public static final String LESS = "<";
+    public static final String GREATER_THAN = "≥";
+    public static final String LESS_THAN = "≤";
     public static final String APPLY = "Chấp nhận";
     public static final String CANCEL = "Hủy";
     public static final String EXIT = "Thoát";

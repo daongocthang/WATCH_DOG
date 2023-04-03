@@ -90,10 +90,10 @@ public class AlertForm extends BottomSheetDialogFragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.radio_less:
-                        stockType = Stock.LESS;
+                        stockType = Stock.LESS_THAN;
                         break;
                     case R.id.radio_greater:
-                        stockType = Stock.GREATER;
+                        stockType = Stock.GREATER_THAN;
                         break;
                 }
             }
@@ -107,7 +107,17 @@ public class AlertForm extends BottomSheetDialogFragment {
             assert stock != null;
             newSymbolText.setText(stock.getSymbol());
             newWarningText.setText(String.valueOf(stock.getWarningPrice()));
-            radioGroup.check(stock.getType() == 0 ? R.id.radio_less : R.id.radio_greater);
+            int res;
+            switch (stock.getType()) {
+                case Stock.GREATER_THAN:
+                    res = R.id.radio_greater;
+                    break;
+                case Stock.LESS_THAN:
+                default:
+                    res = R.id.radio_less;
+                    break;
+            }
+            radioGroup.check(res);
         } else {
             newSymbolText.requestFocus();
         }

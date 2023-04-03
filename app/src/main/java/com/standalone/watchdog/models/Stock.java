@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 import java.io.Serializable;
 
 public class Stock implements Serializable {
-    public static final int LESS = 0;
-    public static final int GREATER = 1;
+    public static final int LESS_THAN = 0;
+    public static final int GREATER_THAN = 1;
 
     private int id;
     private String symbol;

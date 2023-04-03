@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,27 +49,37 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.ViewHolder> 
 
         final Stock item = stockList.get(position);
 
+        boolean warning = false;
+        String mathSymbol;
+        int colorResId;
+
         holder.tvSymbol.setText(item.getSymbol());
         holder.tvWarning.setText(String.valueOf(item.getWarningPrice()));
         holder.tvLast.setText(String.valueOf(item.getLastPrice()));
-        if (item.getType() == Stock.LESS) {
-            holder.tvType.setText(Constant.LESS);
-            holder.tvType.setTextColor(ContextCompat.getColor(activity, R.color.warning_dark));
+        holder.imIcon.setVisibility(View.INVISIBLE);
 
-            if (item.getWarningPrice() >= item.getLastPrice()) {
-                holder.imIcon.setVisibility(View.VISIBLE);
-            }else {
-                holder.imIcon.setVisibility(View.INVISIBLE);
-            }
-        } else {
-            holder.tvType.setText(Constant.GREATER);
-            holder.tvType.setTextColor(ContextCompat.getColor(activity, R.color.success_dark));
+        switch (item.getType()) {
+            case Stock.GREATER_THAN:
+                mathSymbol = Constant.GREATER_THAN;
+                colorResId = R.color.success_dark;
+                if (item.getWarningPrice() <= item.getLastPrice()) {
+                    warning = true;
+                }
+                break;
+            case Stock.LESS_THAN:
+            default:
+                mathSymbol = Constant.LESS_THAN;
+                colorResId = R.color.warning_dark;
+                if (item.getWarningPrice() >= item.getLastPrice()) {
+                    warning = true;
+                }
+                break;
+        }
 
-            if (item.getWarningPrice() <= item.getLastPrice()) {
-                holder.imIcon.setVisibility(View.VISIBLE);
-            }else{
-                holder.imIcon.setVisibility(View.INVISIBLE);
-            }
+        holder.tvType.setText(mathSymbol);
+        holder.tvType.setTextColor(ContextCompat.getColor(activity, colorResId));
+        if (warning) {
+            holder.imIcon.setVisibility(View.VISIBLE);
         }
     }
 

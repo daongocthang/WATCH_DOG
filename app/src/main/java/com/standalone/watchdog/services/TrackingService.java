@@ -163,20 +163,22 @@ public class TrackingService extends Service implements Runnable, StockCollectio
         String strDate = simpleDateFormat.format(calendar.getTime());
         boolean notifiable = false;
         contentText.append(String.format("[ %s ]%5s", strDate, " "));
+        /*
         bigContentText.append(String.format("%-10s\t%10s\t%15s %n",
                 Constant.NOTIFICATION_COLS.get("symbol"),
                 Constant.NOTIFICATION_COLS.get("alarm"),
                 Constant.NOTIFICATION_COLS.get("market")
         ));
+        */
         for (Stock s : stocks) {
             if (s.getLastPrice() == 0) continue;
 
             boolean alert = s.getWarningPrice() <= s.getLastPrice();
-            if (s.getType() == Stock.LESS)
+            if (s.getType() == Stock.LESS_THAN)
                 alert = s.getWarningPrice() >= s.getLastPrice();
 
             if (alert) {
-                String level = new Formatter().format("%s %.2f", s.getType() == Stock.LESS ? "<" : ">", s.getWarningPrice()).toString();
+                String level = new Formatter().format("%s %.2f", s.getType() == Stock.LESS_THAN ? "<" : ">", s.getWarningPrice()).toString();
                 contentText.append(new Formatter().format("%s%-10s", s.getSymbol(), level.replace(" ", "")));
                 bigContentText.append(new Formatter().format("%-10s\t%10s\t%18.2f %n", s.getSymbol(), level, s.getLastPrice()));
                 if (!s.isAlerted()) {
